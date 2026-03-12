@@ -30,19 +30,18 @@ export interface Asset {
   updatedAt: string;
 }
 
-export interface AssetSummary
-  extends Pick<
-    Asset,
-    | "assetID"
-    | "customerID"
-    | "assetName"
-    | "assetTag"
-    | "assetStatus"
-    | "assetCondition"
-    | "locationName"
-    | "categoryName"
-    | "manufacturerName"
-  > {}
+export type AssetSummary = Pick<
+  Asset,
+  | "assetID"
+  | "customerID"
+  | "assetName"
+  | "assetTag"
+  | "assetStatus"
+  | "assetCondition"
+  | "locationName"
+  | "categoryName"
+  | "manufacturerName"
+>;
 
 export interface CreateAssetInput {
   assetName: string;
