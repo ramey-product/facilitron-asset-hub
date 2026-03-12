@@ -1,0 +1,68 @@
+import type { SettingRecord } from "../../../types/providers.js";
+
+export const mockSettings: SettingRecord[] = [
+  {
+    id: 1,
+    customerId: 1,
+    settingKey: "asset.barcode.prefix",
+    settingValue: "AST",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+  {
+    id: 2,
+    customerId: 1,
+    settingKey: "asset.barcode.autoGenerate",
+    settingValue: "true",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+  {
+    id: 3,
+    customerId: 1,
+    settingKey: "asset.condition.trackingEnabled",
+    settingValue: "true",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+  {
+    id: 4,
+    customerId: 1,
+    settingKey: "asset.defaultLifecycleStatus",
+    settingValue: "Active",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+  {
+    id: 5,
+    customerId: 1,
+    settingKey: "asset.warrantyAlertDays",
+    settingValue: "90",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+  {
+    id: 6,
+    customerId: 1,
+    settingKey: "asset.listDefaultPageSize",
+    settingValue: "20",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+  {
+    id: 7,
+    customerId: 1,
+    settingKey: "asset.requireSerialNumber",
+    settingValue: "false",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+  {
+    id: 8,
+    customerId: 1,
+    settingKey: "asset.enableDocumentUploads",
+    settingValue: "true",
+    updatedBy: 1,
+    updatedAt: "2024-06-01T00:00:00.000Z",
+  },
+];
