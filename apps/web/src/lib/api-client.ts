@@ -95,5 +95,33 @@ export const apiClient = {
   },
   dashboard: {
     stats: () => fetchApi("/api/v2/dashboard/stats"),
+    alerts: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/dashboard/alerts", { params }),
+    activity: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/dashboard/activity", { params }),
+  },
+  hierarchies: {
+    getTree: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/tree`),
+    getRollup: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/rollup`),
+    reparent: (assetId: number, data: { parentId: number | null }) =>
+      fetchApi(`/api/v2/assets/${assetId}/parent`, { method: "PUT", body: data }),
+  },
+  status: {
+    get: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/status`),
+    update: (assetId: number, data: { isOnline: boolean; reasonCode?: string; notes?: string }) =>
+      fetchApi(`/api/v2/assets/${assetId}/status`, { method: "PUT", body: data }),
+    reasons: () =>
+      fetchApi("/api/v2/status-reasons"),
+  },
+  costs: {
+    getSummary: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/costs`),
+    getHistory: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/costs/history`),
+    getTopCost: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/assets/costs/top", { params }),
   },
 };

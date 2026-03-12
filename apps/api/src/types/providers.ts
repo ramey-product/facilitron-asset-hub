@@ -3,6 +3,22 @@
  */
 
 import type { PaginationMeta } from "@asset-hub/shared";
+import type {
+  DashboardStats,
+  DashboardAlert,
+  DashboardAlertType,
+  ActivityEvent,
+  HierarchyNode,
+  HierarchyRollup,
+  BulkReparentResult,
+  OperationalStatus,
+  StatusReason,
+  StatusRecord,
+  StatusHistoryEntry,
+  CostSummary,
+  MonthlyCostBreakdown,
+  TopCostAsset,
+} from "@asset-hub/shared";
 
 // ---- Generic pagination wrapper ----
 
@@ -38,6 +54,13 @@ export interface AssetRecord {
   createdBy: number | null;
   modifiedBy: number | null;
   notes: string | null;
+  // Phase 3: Hierarchy support
+  parentEquipmentId: number | null;
+  // Phase 3: Online/Offline status
+  operationalStatus: "online" | "offline";
+  statusReasonCode: string | null;
+  statusChangedAt: string | null;
+  statusChangedBy: number | null;
   // Joined fields for list display
   propertyName?: string;
   locationName?: string;
@@ -76,6 +99,7 @@ export interface CreateAssetInput {
   lifecycleStatus?: string;
   conditionRating?: number;
   notes?: string;
+  parentEquipmentId?: number | null;
 }
 
 export type UpdateAssetInput = Partial<CreateAssetInput>;
@@ -224,4 +248,51 @@ export interface ConditionProvider {
   getHistory(customerID: number, equipmentId: number, limit: number, offset: number): Promise<PaginatedResult<ConditionLogRecord>>;
   getStats(customerID: number, equipmentId: number): Promise<ConditionStats | null>;
   logCondition(customerID: number, equipmentId: number, loggedBy: number, data: CreateConditionLogInput): Promise<ConditionLogRecord>;
+}
+
+// ---- Dashboard types ----
+
+export interface DashboardProvider {
+  getStats(customerID: number): Promise<DashboardStats>;
+  getAlerts(customerID: number, type: DashboardAlertType | undefined, page: number, limit: number): Promise<PaginatedResult<DashboardAlert>>;
+  getActivity(customerID: number, page: number, limit: number): Promise<PaginatedResult<ActivityEvent>>;
+}
+
+// ---- Hierarchy types ----
+
+export interface HierarchyProvider {
+  getTree(customerID: number, assetId: number): Promise<HierarchyNode | null>;
+  getRollup(customerID: number, assetId: number): Promise<HierarchyRollup | null>;
+  reparent(customerID: number, assetId: number, newParentId: number | null, contactId: number): Promise<{ success: boolean; error?: string }>;
+  bulkReparent(customerID: number, items: { assetId: number; newParentId: number | null }[], contactId: number): Promise<BulkReparentResult>;
+}
+
+// ---- Status types ----
+
+export interface StatusProvider {
+  getStatus(customerID: number, assetId: number): Promise<StatusRecord | null>;
+  updateStatus(customerID: number, assetId: number, status: OperationalStatus, reasonCode: string | null, notes: string | null, changedBy: number): Promise<StatusRecord | null>;
+  getHistory(customerID: number, assetId: number, page: number, limit: number): Promise<PaginatedResult<StatusHistoryEntry>>;
+  getReasons(): StatusReason[];
+}
+
+// ---- Cost types ----
+
+export interface WorkOrderRecord {
+  workOrderId: number;
+  customerID: number;
+  equipmentRecordID: number;
+  workOrderNumber: string;
+  description: string;
+  laborCost: number;
+  partsCost: number;
+  vendorCost: number;
+  completedDate: string;
+  status: string;
+}
+
+export interface CostProvider {
+  getCostSummary(customerID: number, assetId: number): Promise<CostSummary | null>;
+  getCostHistory(customerID: number, assetId: number, months: number): Promise<MonthlyCostBreakdown[]>;
+  getTopCostAssets(customerID: number, limit: number): Promise<TopCostAsset[]>;
 }

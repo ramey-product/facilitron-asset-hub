@@ -25,7 +25,7 @@ import { useTheme } from "./theme-provider";
 import { useOrg } from "./org-provider";
 
 const navigation = [
-  { name: "Hub Dashboard", href: "/", icon: LayoutDashboard, disabled: false },
+  { name: "Hub Dashboard", href: "/dashboard", icon: LayoutDashboard, disabled: false },
   { name: "Assets", href: "/assets", icon: Box, disabled: false },
   { name: "Inventory", href: "/inventory", icon: Package, disabled: true, badge: "Coming Soon" },
   { name: "Procurement", href: "/procurement", icon: ShoppingCart, disabled: true, badge: "Coming Soon" },
@@ -196,8 +196,7 @@ export function Sidebar() {
           </div>
         )}
         {navigation.map((item) => {
-          const isActive =
-            item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
               key={item.name}
