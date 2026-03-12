@@ -8,6 +8,10 @@ import { assets } from "./routes/assets.js";
 import { settings } from "./routes/settings.js";
 import { manufacturers } from "./routes/manufacturers.js";
 import { conditions } from "./routes/conditions.js";
+import { dashboard } from "./routes/dashboard.js";
+import { hierarchies } from "./routes/hierarchies.js";
+import { status, statusReasons } from "./routes/status.js";
+import { costs, topCosts } from "./routes/costs.js";
 import type { AppEnv } from "./types/context.js";
 
 const app = new Hono<AppEnv>();
@@ -38,6 +42,14 @@ app.route("/api/v2/assets", assets);
 app.route("/api/v2/settings", settings);
 app.route("/api/v2/manufacturers", manufacturers);
 app.route("/api/v2/conditions", conditions);
+
+// Phase 3: Hub Experience routes
+app.route("/api/v2/dashboard", dashboard);
+app.route("/api/v2/assets", hierarchies);
+app.route("/api/v2/assets", status);
+app.route("/api/v2/assets", costs);
+app.route("/api/v2/assets/costs/top", topCosts);
+app.route("/api/v2/status-reasons", statusReasons);
 
 // 404 fallback
 app.notFound((c) => {

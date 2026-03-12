@@ -14,6 +14,8 @@ import {
   Wrench,
   FileText,
   Clock,
+  GitBranch,
+  BarChart2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +24,10 @@ import { cn, formatCurrency, formatDate, getConditionBg, getLifecycleBg } from "
 import { useAsset, conditionLabel, lifecycleLabel } from "@/hooks/use-assets";
 import { useConditionStats } from "@/hooks/use-conditions";
 import { ConditionCard } from "@/components/features/conditions/condition-card";
+import { StatusToggle } from "@/components/features/status/status-toggle";
+import { CostSummaryCard } from "@/components/features/costs/cost-summary-card";
+import { CostHistoryChart } from "@/components/features/costs/cost-history-chart";
+import { AssetTree } from "@/components/features/hierarchies/asset-tree";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -29,6 +35,8 @@ interface PageProps {
 
 const tabs = [
   { key: "overview", label: "Overview", icon: Activity },
+  { key: "costs", label: "Costs", icon: BarChart2 },
+  { key: "hierarchy", label: "Hierarchy", icon: GitBranch },
   { key: "workorders", label: "Work Orders", icon: Wrench },
   { key: "documents", label: "Documents", icon: FileText },
   { key: "timeline", label: "Timeline", icon: Clock },
@@ -86,7 +94,7 @@ export default function AssetDetailPage({ params }: PageProps) {
               </Button>
             </Link>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl font-bold text-[var(--foreground)]">
                   {asset.equipmentName}
                 </h1>
@@ -106,6 +114,8 @@ export default function AssetDetailPage({ params }: PageProps) {
                 >
                   {lifecycleLabel(asset.lifecycleStatus)}
                 </Badge>
+                {/* Online/offline status toggle */}
+                <StatusToggle assetId={id} />
               </div>
               {asset.equipmentBarCodeID && (
                 <p className="text-xs font-mono text-[var(--muted-foreground)]">
@@ -129,8 +139,8 @@ export default function AssetDetailPage({ params }: PageProps) {
       </header>
 
       {/* Tabs */}
-      <div className="border-b border-[var(--border)] px-8">
-        <nav className="flex gap-6">
+      <div className="border-b border-[var(--border)] px-8 overflow-x-auto">
+        <nav className="flex gap-6 min-w-max">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
@@ -138,7 +148,7 @@ export default function AssetDetailPage({ params }: PageProps) {
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={cn(
-                  "flex items-center gap-2 border-b-2 px-1 py-3 text-sm font-medium transition-colors",
+                  "flex items-center gap-2 border-b-2 px-1 py-3 text-sm font-medium transition-colors whitespace-nowrap",
                   activeTab === tab.key
                     ? "border-[var(--primary)] text-[var(--primary)]"
                     : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -271,6 +281,9 @@ export default function AssetDetailPage({ params }: PageProps) {
               {/* Condition Card */}
               <ConditionCard assetId={id} stats={stats ?? null} />
 
+              {/* Cost Summary Card */}
+              <CostSummaryCard assetId={id} />
+
               {/* Quick Info */}
               <Card>
                 <CardContent className="p-5 space-y-3">
@@ -323,6 +336,25 @@ export default function AssetDetailPage({ params }: PageProps) {
                 </CardContent>
               </Card>
             </div>
+          </div>
+        )}
+
+        {activeTab === "costs" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-3 gap-6">
+              <div className="col-span-2">
+                <CostHistoryChart assetId={id} />
+              </div>
+              <div>
+                <CostSummaryCard assetId={id} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "hierarchy" && (
+          <div className="max-w-2xl">
+            <AssetTree assetId={id} />
           </div>
         )}
 
