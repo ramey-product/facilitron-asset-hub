@@ -305,4 +305,96 @@ export const apiClient = {
     cancel: (id: number) =>
       fetchApi(`/api/v2/inventory/transfers/${id}/cancel`, { method: "POST" }),
   },
+  mapping: {
+    listFloorPlans: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/maps", { params }),
+    getFloorPlan: (mapId: number) =>
+      fetchApi(`/api/v2/maps/${mapId}`),
+    getPins: (mapId: number, params?: Record<string, string | number>) =>
+      fetchApi(`/api/v2/maps/${mapId}/pins`, { params }),
+    createPin: (mapId: number, data: unknown) =>
+      fetchApi(`/api/v2/maps/${mapId}/pins`, { method: "POST", body: data }),
+    updatePin: (pinId: number, data: unknown) =>
+      fetchApi(`/api/v2/maps/pins/${pinId}`, { method: "PUT", body: data }),
+    deletePin: (pinId: number) =>
+      fetchApi(`/api/v2/maps/pins/${pinId}`, { method: "DELETE" }),
+  },
+  reports: {
+    listSchedules: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/reports/schedules", { params }),
+    getSchedule: (id: number) =>
+      fetchApi(`/api/v2/reports/schedules/${id}`),
+    createSchedule: (data: unknown) =>
+      fetchApi("/api/v2/reports/schedules", { method: "POST", body: data }),
+    updateSchedule: (id: number, data: unknown) =>
+      fetchApi(`/api/v2/reports/schedules/${id}`, { method: "PUT", body: data }),
+    deleteSchedule: (id: number) =>
+      fetchApi(`/api/v2/reports/schedules/${id}`, { method: "DELETE" }),
+    listDeliveries: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/reports/deliveries", { params }),
+    retryDelivery: (id: number) =>
+      fetchApi(`/api/v2/reports/deliveries/${id}/retry`, { method: "POST" }),
+    previewReport: (id: number) =>
+      fetchApi(`/api/v2/reports/schedules/${id}/preview`, { method: "POST" }),
+  },
+  lifecycle: {
+    getAssetEvents: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/lifecycle`),
+    createEvent: (assetId: number, data: unknown) =>
+      fetchApi(`/api/v2/assets/${assetId}/lifecycle`, { method: "POST", body: data }),
+    getKPIs: () =>
+      fetchApi("/api/v2/analytics/lifecycle"),
+    getForecast: (years?: number) =>
+      fetchApi("/api/v2/analytics/lifecycle/forecast", { params: years ? { years } : undefined }),
+    getCompliance: () =>
+      fetchApi("/api/v2/analytics/lifecycle/compliance"),
+  },
+  // Phase 7: Meter-Based Maintenance (P1-29)
+  meters: {
+    getByAsset: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/meters`),
+    history: (assetId: number, meterId: number, params?: Record<string, string | number>) =>
+      fetchApi(`/api/v2/assets/${assetId}/meters/${meterId}/history`, { params }),
+    thresholds: (assetId: number, meterId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/meters/${meterId}/thresholds`),
+    createReading: (assetId: number, meterId: number, data: unknown) =>
+      fetchApi(`/api/v2/assets/${assetId}/meters/${meterId}/readings`, { method: "POST", body: data }),
+    updateThreshold: (assetId: number, meterId: number, thresholdId: number, data: unknown) =>
+      fetchApi(`/api/v2/assets/${assetId}/meters/${meterId}/threshold/${thresholdId}`, { method: "PUT", body: data }),
+    alerts: () =>
+      fetchApi("/api/v2/meters/alerts"),
+  },
+  // Phase 7: Downtime Tracking (P1-30)
+  downtime: {
+    events: (assetId: number, params?: Record<string, string | number>) =>
+      fetchApi(`/api/v2/assets/${assetId}/downtime`, { params }),
+    stats: (assetId: number, params?: Record<string, string | number>) =>
+      fetchApi(`/api/v2/assets/${assetId}/downtime/stats`, { params }),
+    createEvent: (assetId: number, data: unknown) =>
+      fetchApi(`/api/v2/assets/${assetId}/downtime`, { method: "POST", body: data }),
+    resolve: (eventId: number) =>
+      fetchApi(`/api/v2/downtime/${eventId}/resolve`, { method: "POST" }),
+    reliability: () =>
+      fetchApi("/api/v2/analytics/reliability"),
+  },
+  // Phase 7: TCO / Asset Cost Rollup (P1-31)
+  tco: {
+    getByAsset: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/tco`),
+    comparison: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/analytics/tco", { params }),
+    repairVsReplace: () =>
+      fetchApi("/api/v2/analytics/tco/repair-vs-replace"),
+  },
+  // Phase 7: Depreciation (P1-32)
+  depreciation: {
+    getByAsset: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/depreciation`),
+    schedule: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/depreciation/schedule`),
+    summary: () =>
+      fetchApi("/api/v2/analytics/depreciation"),
+    register: () =>
+      fetchApi("/api/v2/analytics/depreciation/register"),
+  },
 };

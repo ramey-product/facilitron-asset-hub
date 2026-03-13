@@ -20,6 +20,9 @@ import {
   Settings2,
   ClipboardCheck,
   ScanLine,
+  Gauge,
+  AlertCircle,
+  TrendingDown,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +54,11 @@ const tabs = [
   { key: "hierarchy", label: "Hierarchy", icon: GitBranch },
   { key: "workorders", label: "Work Orders", icon: Wrench },
   { key: "timeline", label: "Timeline", icon: Clock },
+  { key: "meters", label: "Meters", icon: Gauge, href: "meters" },
+  { key: "downtime", label: "Downtime", icon: AlertCircle, href: "downtime" },
+  { key: "tco", label: "TCO", icon: DollarSign, href: "tco" },
+  { key: "depreciation", label: "Depreciation", icon: TrendingDown, href: "depreciation" },
+  { key: "lifecycle", label: "Lifecycle", icon: GitBranch, href: "lifecycle" },
 ] as const;
 
 type TabKey = (typeof tabs)[number]["key"];
@@ -161,6 +169,25 @@ export default function AssetDetailPage({ params }: PageProps) {
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.key;
+            const tabClassName = cn(
+              "flex items-center gap-2 border-b-2 px-1 py-3 text-sm font-medium transition-colors whitespace-nowrap",
+              isActive
+                ? "border-[var(--primary)] text-[var(--primary)]"
+                : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+            );
+            // Tabs with href navigate to sub-pages
+            if ("href" in tab && tab.href) {
+              return (
+                <Link
+                  key={tab.key}
+                  href={`/assets/${id}/${tab.href}`}
+                  className={tabClassName}
+                >
+                  <Icon className="h-4 w-4" />
+                  {tab.label}
+                </Link>
+              );
+            }
             return (
               <button
                 key={tab.key}
@@ -168,12 +195,7 @@ export default function AssetDetailPage({ params }: PageProps) {
                 aria-selected={isActive}
                 aria-controls={`panel-${tab.key}`}
                 onClick={() => setActiveTab(tab.key)}
-                className={cn(
-                  "flex items-center gap-2 border-b-2 px-1 py-3 text-sm font-medium transition-colors whitespace-nowrap",
-                  isActive
-                    ? "border-[var(--primary)] text-[var(--primary)]"
-                    : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-                )}
+                className={tabClassName}
               >
                 <Icon className="h-4 w-4" />
                 {tab.label}
