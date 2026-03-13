@@ -71,15 +71,17 @@ const severityConfig: Record<
 
 interface AlertsWidgetProps {
   refetchInterval?: number;
+  propertyId?: number | null;
 }
 
-export function AlertsWidget({ refetchInterval }: AlertsWidgetProps) {
+export function AlertsWidget({ refetchInterval, propertyId }: AlertsWidgetProps) {
   const [filterType, setFilterType] = useState<string>("all");
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   const { data, isLoading } = useDashboardAlerts(
     filterType !== "all" ? filterType : undefined,
-    refetchInterval
+    refetchInterval,
+    propertyId
   );
 
   const alerts = data?.data ?? [];

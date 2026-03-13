@@ -16,6 +16,10 @@ import {
   Clock,
   GitBranch,
   BarChart2,
+  Camera,
+  Settings2,
+  ClipboardCheck,
+  ScanLine,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +32,10 @@ import { StatusToggle } from "@/components/features/status/status-toggle";
 import { CostSummaryCard } from "@/components/features/costs/cost-summary-card";
 import { CostHistoryChart } from "@/components/features/costs/cost-history-chart";
 import { AssetTree } from "@/components/features/hierarchies/asset-tree";
+import { PhotoGallery } from "@/components/features/assets/photo-gallery";
+import { DocumentList } from "@/components/features/assets/document-list";
+import { CustomFields } from "@/components/features/assets/custom-fields";
+import { FitSummaryCard } from "@/components/features/assets/fit-summary";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -35,10 +43,13 @@ interface PageProps {
 
 const tabs = [
   { key: "overview", label: "Overview", icon: Activity },
+  { key: "photos", label: "Photos", icon: Camera },
+  { key: "documents", label: "Documents", icon: FileText },
+  { key: "custom-fields", label: "Custom Fields", icon: Settings2 },
+  { key: "inspections", label: "Inspections", icon: ClipboardCheck },
   { key: "costs", label: "Costs", icon: BarChart2 },
   { key: "hierarchy", label: "Hierarchy", icon: GitBranch },
   { key: "workorders", label: "Work Orders", icon: Wrench },
-  { key: "documents", label: "Documents", icon: FileText },
   { key: "timeline", label: "Timeline", icon: Clock },
 ] as const;
 
@@ -85,7 +96,7 @@ export default function AssetDetailPage({ params }: PageProps) {
     <div className="min-h-screen bg-[var(--background)]">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-md">
-        <div className="flex h-16 items-center justify-between px-8">
+        <div className="flex h-16 items-center justify-between px-4 sm:px-8">
           <div className="flex items-center gap-4">
             <Link href="/assets">
               <Button variant="ghost" size="sm">
@@ -126,6 +137,12 @@ export default function AssetDetailPage({ params }: PageProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Link href="/scan">
+              <Button variant="outline" size="sm" className="sm:hidden">
+                <ScanLine className="mr-2 h-3.5 w-3.5" />
+                Scan
+              </Button>
+            </Link>
             <Button variant="outline" size="sm">
               <Edit className="mr-2 h-3.5 w-3.5" />
               Edit
@@ -139,7 +156,7 @@ export default function AssetDetailPage({ params }: PageProps) {
       </header>
 
       {/* Tabs */}
-      <div className="border-b border-[var(--border)] px-8 overflow-x-auto">
+      <div className="border-b border-[var(--border)] px-4 sm:px-8 overflow-x-auto">
         <nav className="flex gap-6 min-w-max">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -163,11 +180,11 @@ export default function AssetDetailPage({ params }: PageProps) {
       </div>
 
       {/* Tab Content */}
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         {activeTab === "overview" && (
-          <div className="grid grid-cols-3 gap-6">
-            {/* Main info — 2 cols */}
-            <div className="col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main info — 2 cols on desktop */}
+            <div className="lg:col-span-2 space-y-6">
               {/* Description */}
               {asset.equipmentDescription && (
                 <Card>
@@ -341,8 +358,8 @@ export default function AssetDetailPage({ params }: PageProps) {
 
         {activeTab === "costs" && (
           <div className="space-y-6">
-            <div className="grid grid-cols-3 gap-6">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
                 <CostHistoryChart assetId={id} />
               </div>
               <div>
@@ -358,6 +375,22 @@ export default function AssetDetailPage({ params }: PageProps) {
           </div>
         )}
 
+        {activeTab === "photos" && (
+          <PhotoGallery assetId={id} />
+        )}
+
+        {activeTab === "documents" && (
+          <DocumentList assetId={id} />
+        )}
+
+        {activeTab === "custom-fields" && (
+          <CustomFields assetId={id} editable />
+        )}
+
+        {activeTab === "inspections" && (
+          <FitSummaryCard assetId={id} />
+        )}
+
         {activeTab === "workorders" && (
           <Card>
             <CardContent className="p-8 text-center">
@@ -367,20 +400,6 @@ export default function AssetDetailPage({ params }: PageProps) {
               </h3>
               <p className="mt-1 text-xs text-[var(--muted-foreground)]">
                 Work order integration coming in Phase 3.
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
-        {activeTab === "documents" && (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <FileText className="mx-auto h-8 w-8 text-[var(--muted-foreground)]" />
-              <h3 className="mt-3 text-sm font-semibold text-[var(--foreground)]">
-                Documents
-              </h3>
-              <p className="mt-1 text-xs text-[var(--muted-foreground)]">
-                Document storage coming in Phase 4.
               </p>
             </CardContent>
           </Card>

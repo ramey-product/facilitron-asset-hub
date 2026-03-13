@@ -34,6 +34,7 @@ export const assetQuerySchema = z.object({
   status: z.string().max(50).optional(),
   condition: assetConditionSchema.optional(),
   locationID: z.coerce.number().int().positive().optional(),
+  propertyId: z.coerce.number().int().positive().optional(),
   categoryID: z.coerce.number().int().positive().optional(),
   search: z.string().max(255).optional(),
   sortBy: z.string().max(50).optional(),

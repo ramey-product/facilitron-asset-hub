@@ -21,11 +21,12 @@ function timeAgo(dateStr: string): string {
 
 interface ActivityFeedProps {
   refetchInterval?: number;
+  propertyId?: number | null;
 }
 
-export function ActivityFeed({ refetchInterval }: ActivityFeedProps) {
+export function ActivityFeed({ refetchInterval, propertyId }: ActivityFeedProps) {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useDashboardActivity(page, refetchInterval);
+  const { data, isLoading } = useDashboardActivity(page, refetchInterval, propertyId);
 
   const events = data?.data ?? [];
   const hasMore = data ? page < data.meta.totalPages : false;

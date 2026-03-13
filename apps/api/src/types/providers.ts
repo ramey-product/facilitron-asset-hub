@@ -18,6 +18,22 @@ import type {
   CostSummary,
   MonthlyCostBreakdown,
   TopCostAsset,
+  ImportColumnMapping,
+  ImportValidationResult,
+  ImportResult,
+  ImportHistoryEntry,
+  ImportFieldDefinition,
+  AssetPhoto,
+  AssetDocument,
+  CustomFieldDefinition,
+  CustomFieldValue,
+  CreatePhotoInput,
+  CreateDocumentInput,
+  CreateCustomFieldDefinitionInput,
+  UpdateCustomFieldDefinitionInput,
+  UpdateCustomFieldValuesInput,
+  FitSummary,
+  FitInspectionRecord,
 } from "@asset-hub/shared";
 
 // ---- Generic pagination wrapper ----
@@ -78,6 +94,7 @@ export interface ListAssetsQuery {
   condition?: string;
   categoryID?: number;
   locationID?: number;
+  propertyId?: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }
@@ -253,9 +270,9 @@ export interface ConditionProvider {
 // ---- Dashboard types ----
 
 export interface DashboardProvider {
-  getStats(customerID: number): Promise<DashboardStats>;
-  getAlerts(customerID: number, type: DashboardAlertType | undefined, page: number, limit: number): Promise<PaginatedResult<DashboardAlert>>;
-  getActivity(customerID: number, page: number, limit: number): Promise<PaginatedResult<ActivityEvent>>;
+  getStats(customerID: number, propertyId?: number): Promise<DashboardStats>;
+  getAlerts(customerID: number, type: DashboardAlertType | undefined, page: number, limit: number, propertyId?: number): Promise<PaginatedResult<DashboardAlert>>;
+  getActivity(customerID: number, page: number, limit: number, propertyId?: number): Promise<PaginatedResult<ActivityEvent>>;
 }
 
 // ---- Hierarchy types ----
@@ -295,4 +312,57 @@ export interface CostProvider {
   getCostSummary(customerID: number, assetId: number): Promise<CostSummary | null>;
   getCostHistory(customerID: number, assetId: number, months: number): Promise<MonthlyCostBreakdown[]>;
   getTopCostAssets(customerID: number, limit: number): Promise<TopCostAsset[]>;
+}
+
+// ---- Import types ----
+
+export interface ImportProvider {
+  validate(
+    customerID: number,
+    rows: Record<string, string>[],
+    mapping: ImportColumnMapping[]
+  ): Promise<ImportValidationResult>;
+  execute(
+    customerID: number,
+    contactId: number,
+    filename: string,
+    rows: Record<string, string>[],
+    mapping: ImportColumnMapping[]
+  ): Promise<ImportResult>;
+  getHistory(
+    customerID: number,
+    page: number,
+    limit: number
+  ): Promise<PaginatedResult<ImportHistoryEntry>>;
+  getTemplate(): ImportFieldDefinition[];
+}
+
+// ---- Document/Photo types (P0-08) ----
+
+export interface DocumentProvider {
+  listPhotos(customerID: number, assetId: number): Promise<AssetPhoto[]>;
+  addPhoto(customerID: number, assetId: number, uploadedBy: number, data: CreatePhotoInput): Promise<AssetPhoto>;
+  deletePhoto(customerID: number, assetId: number, photoId: number): Promise<boolean>;
+  setPrimaryPhoto(customerID: number, assetId: number, photoId: number): Promise<AssetPhoto | null>;
+  listDocuments(customerID: number, assetId: number): Promise<AssetDocument[]>;
+  addDocument(customerID: number, assetId: number, uploadedBy: number, data: CreateDocumentInput): Promise<AssetDocument>;
+  deleteDocument(customerID: number, assetId: number, docId: number): Promise<boolean>;
+}
+
+// ---- Custom Fields types (P0-08) ----
+
+export interface CustomFieldProvider {
+  listDefinitions(customerID: number): Promise<CustomFieldDefinition[]>;
+  createDefinition(customerID: number, data: CreateCustomFieldDefinitionInput): Promise<CustomFieldDefinition>;
+  updateDefinition(customerID: number, id: number, data: UpdateCustomFieldDefinitionInput): Promise<CustomFieldDefinition | null>;
+  deleteDefinition(customerID: number, id: number): Promise<boolean>;
+  getAssetValues(customerID: number, assetId: number): Promise<CustomFieldValue[]>;
+  updateAssetValues(customerID: number, assetId: number, data: UpdateCustomFieldValuesInput): Promise<CustomFieldValue[]>;
+}
+
+// ---- FIT types (P0-16) ----
+
+export interface FitProvider {
+  getSummary(customerID: number, assetId: number): Promise<FitSummary | null>;
+  getInspections(customerID: number, assetId: number, page: number, limit: number): Promise<PaginatedResult<FitInspectionRecord>>;
 }

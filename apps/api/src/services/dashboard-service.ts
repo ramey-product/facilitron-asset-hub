@@ -9,20 +9,26 @@ const getProvider = (): DashboardProvider => {
 };
 
 export const dashboardService = {
-  async getStats(customerID: number) {
-    return getProvider().getStats(customerID);
+  async getStats(customerID: number, propertyId?: number) {
+    return getProvider().getStats(customerID, propertyId);
   },
 
   async getAlerts(
     customerID: number,
     type: DashboardAlertType | undefined,
     page: number,
-    limit: number
+    limit: number,
+    propertyId?: number
   ) {
-    return getProvider().getAlerts(customerID, type, page, limit);
+    return getProvider().getAlerts(customerID, type, page, limit, propertyId);
   },
 
-  async getActivity(customerID: number, page: number, limit: number) {
-    return getProvider().getActivity(customerID, page, limit);
+  async getActivity(
+    customerID: number,
+    page: number,
+    limit: number,
+    propertyId?: number
+  ) {
+    return getProvider().getActivity(customerID, page, limit, propertyId);
   },
 };
