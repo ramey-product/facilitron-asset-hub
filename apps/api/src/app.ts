@@ -34,6 +34,14 @@ import { meters, meterAlerts } from "./routes/meters.js";
 import { downtime, downtimeResolve, reliability } from "./routes/downtime.js";
 import { tcoAsset, tco } from "./routes/tco.js";
 import { depreciationAsset, depreciation } from "./routes/depreciation.js";
+// Phase 8: Operations & Polish
+import { warehouse } from "./routes/warehouse.js";
+import { pickLists } from "./routes/pick-lists.js";
+import { toolroom } from "./routes/toolroom.js";
+import { notifications } from "./routes/notifications.js";
+import { inventoryReports } from "./routes/inventory-reports.js";
+import { consumablesDashboard } from "./routes/consumables-dashboard.js";
+import { inventoryOverview } from "./routes/inventory-overview.js";
 import type { AppEnv } from "./types/context.js";
 
 const app = new Hono<AppEnv>();
@@ -149,6 +157,30 @@ app.route("/api/v2/assets", tcoAsset);
 // /analytics/depreciation/register MUST be before /analytics/depreciation (summary)
 app.route("/api/v2/analytics", depreciation);
 app.route("/api/v2/assets", depreciationAsset);
+
+// Phase 8: Operations & Polish
+// Warehouse Transactions (P1-26)
+app.route("/api/v2/warehouse", warehouse);
+
+// Pick Lists (P1-27)
+app.route("/api/v2/pick-lists", pickLists);
+
+// Tool Room Management (P1-30)
+// /stats must be before /:id to avoid parameter collision
+app.route("/api/v2/toolroom", toolroom);
+
+// Notifications & Alerts (P1-28)
+app.route("/api/v2/notifications", notifications);
+
+// Inventory Reports (P1-31)
+// /generate and /templates must be before /:id
+app.route("/api/v2/inventory-reports", inventoryReports);
+
+// Consumables Dashboard (P1-32)
+app.route("/api/v2/consumables-dashboard", consumablesDashboard);
+
+// Inventory Overview / Dashboard (P1-33)
+app.route("/api/v2/inventory-overview", inventoryOverview);
 
 // 404 fallback
 app.notFound((c) => {
