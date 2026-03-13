@@ -35,6 +35,10 @@ import {
   DollarSign,
   TrendingDown,
   Activity,
+  ClipboardList,
+  Hammer,
+  FileBarChart,
+  BellRing,
 } from "lucide-react";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useTheme } from "./theme-provider";
@@ -72,8 +76,15 @@ const sections: NavSection[] = [
     label: "Inventory",
     icon: Package,
     items: [
+      { name: "Inv. Dashboard", href: "/inventory/dashboard", icon: LayoutDashboard, disabled: false },
+      { name: "Inv. Overview", href: "/inventory/overview", icon: Activity, disabled: false },
       { name: "Parts Catalog", href: "/inventory", icon: Package, disabled: false },
       { name: "Stock Matrix", href: "/inventory/stock-matrix", icon: Warehouse, disabled: false },
+      { name: "Warehouse", href: "/inventory/warehouse", icon: Warehouse, disabled: false },
+      { name: "Pick Lists", href: "/inventory/pick-lists", icon: ClipboardList, disabled: false },
+      { name: "Toolroom", href: "/inventory/toolroom", icon: Hammer, disabled: false },
+      { name: "Inv. Reports", href: "/inventory/reports", icon: FileBarChart, disabled: false },
+      { name: "Inv. Search", href: "/inventory/search", icon: Search, disabled: false },
       { name: "Vendor Directory", href: "/procurement/vendors", icon: Truck, disabled: false },
       { name: "Audit Trail", href: "/inventory/audit", icon: FileSearch, disabled: false },
       { name: "Discrepancies", href: "/inventory/discrepancies", icon: AlertTriangle, disabled: false },
@@ -108,6 +119,7 @@ const sections: NavSection[] = [
 
 const bottomNav = [
   { name: "Report Schedules", href: "/settings/reports", icon: CalendarClock, disabled: false },
+  { name: "Notifications", href: "/settings/notifications", icon: BellRing, disabled: false },
   { name: "Settings", href: "/settings", icon: Settings, disabled: false },
 ];
 

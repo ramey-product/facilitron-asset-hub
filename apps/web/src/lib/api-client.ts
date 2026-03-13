@@ -397,4 +397,81 @@ export const apiClient = {
     register: () =>
       fetchApi("/api/v2/analytics/depreciation/register"),
   },
+  // Phase 8: Consumables Dashboard (P1-26, P1-27)
+  consumablesDashboard: {
+    getKPIs: () =>
+      fetchApi("/api/v2/consumables-dashboard/kpis"),
+    getTrends: () =>
+      fetchApi("/api/v2/consumables-dashboard/trends"),
+    getActivity: () =>
+      fetchApi("/api/v2/consumables-dashboard/activity"),
+  },
+  // Phase 8: Inventory Overview / Dashboard (P1-36)
+  inventoryOverview: {
+    getMetrics: () =>
+      fetchApi("/api/v2/inventory-overview/metrics"),
+    getHealthScore: () =>
+      fetchApi("/api/v2/inventory-overview/health-score"),
+    search: (params?: Record<string, string | number | undefined>) =>
+      fetchApi("/api/v2/inventory-overview/search", { params }),
+  },
+  // Phase 8: Warehouse / Fulfillment (P1-37)
+  warehouse: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/warehouse", { params }),
+    create: (data: unknown) =>
+      fetchApi("/api/v2/warehouse", { method: "POST", body: data }),
+    getStats: () =>
+      fetchApi("/api/v2/warehouse/stats"),
+  },
+  // Phase 8: Toolroom (P1-40)
+  toolroom: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/toolroom", { params }),
+    getStats: () =>
+      fetchApi("/api/v2/toolroom/stats"),
+    checkout: (data: unknown) =>
+      fetchApi("/api/v2/toolroom/checkout", { method: "POST", body: data }),
+    return: (id: number, data: unknown) =>
+      fetchApi(`/api/v2/toolroom/${id}/return`, { method: "POST", body: data }),
+  },
+  // Phase 8: Inventory Emails / Notifications (P1-39)
+  notifications: {
+    getPreferences: () =>
+      fetchApi("/api/v2/notifications/preferences"),
+    updatePreferences: (data: unknown) =>
+      fetchApi("/api/v2/notifications/preferences", { method: "PUT", body: data }),
+    getEmailLog: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/notifications/email-log", { params }),
+    getTemplates: () =>
+      fetchApi("/api/v2/notifications/templates"),
+  },
+  // Phase 8: Pick Lists (P1-38)
+  pickLists: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/pick-lists", { params }),
+    get: (id: number) =>
+      fetchApi(`/api/v2/pick-lists/${id}`),
+    create: (data: unknown) =>
+      fetchApi("/api/v2/pick-lists", { method: "POST", body: data }),
+    updateItem: (pickListId: number, itemId: number, data: unknown) =>
+      fetchApi(`/api/v2/pick-lists/${pickListId}/items/${itemId}`, { method: "PATCH", body: data }),
+    complete: (id: number) =>
+      fetchApi(`/api/v2/pick-lists/${id}/complete`, { method: "POST" }),
+  },
+  // Phase 8: Inventory Use Report (P1-28)
+  inventoryReports: {
+    generate: (data: unknown) =>
+      fetchApi("/api/v2/inventory-reports/generate", { method: "POST", body: data }),
+    listTemplates: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/inventory-reports/templates", { params }),
+    getTemplate: (id: number) =>
+      fetchApi(`/api/v2/inventory-reports/templates/${id}`),
+    createTemplate: (data: unknown) =>
+      fetchApi("/api/v2/inventory-reports/templates", { method: "POST", body: data }),
+    updateTemplate: (id: number, data: unknown) =>
+      fetchApi(`/api/v2/inventory-reports/templates/${id}`, { method: "PUT", body: data }),
+    deleteTemplate: (id: number) =>
+      fetchApi(`/api/v2/inventory-reports/templates/${id}`, { method: "DELETE" }),
+  },
 };
