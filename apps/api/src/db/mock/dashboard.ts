@@ -14,10 +14,13 @@ import { mockProperties } from "./data/locations.js";
 import { mockWorkOrders } from "./data/work-orders.js";
 
 export const mockDashboardProvider: DashboardProvider = {
-  async getStats(customerID: number): Promise<DashboardStats> {
-    const active = mockAssets.filter(
+  async getStats(customerID: number, propertyId?: number): Promise<DashboardStats> {
+    let active = mockAssets.filter(
       (a) => a.customerID === customerID && a.isActive
     );
+    if (propertyId !== undefined) {
+      active = active.filter((a) => a.propertyID === propertyId);
+    }
 
     // Assets by status
     const statusMap = new Map<string, number>();
@@ -91,14 +94,21 @@ export const mockDashboardProvider: DashboardProvider = {
       (a) => a.operationalStatus === "offline"
     ).length;
 
-    // Total properties for this customer
-    const totalProperties = mockProperties.filter(
-      (p) => p.customerID === customerID && p.isActive
-    ).length;
+    // Total properties for this customer (scoped to 1 when filtering by property)
+    const totalProperties = propertyId !== undefined
+      ? 1
+      : mockProperties.filter(
+          (p) => p.customerID === customerID && p.isActive
+        ).length;
 
-    // Work orders
+    // Work orders (filter by property via asset lookup when scoped)
+    const activeAssetIds = propertyId !== undefined
+      ? new Set(active.map((a) => a.equipmentRecordID))
+      : null;
     const customerWOs = mockWorkOrders.filter(
-      (wo) => wo.customerID === customerID
+      (wo) =>
+        wo.customerID === customerID &&
+        (activeAssetIds === null || activeAssetIds.has(wo.equipmentRecordID))
     );
     const openWorkOrders = customerWOs.filter(
       (wo) => wo.status === "InProgress" || wo.status === "Open"
@@ -175,11 +185,15 @@ export const mockDashboardProvider: DashboardProvider = {
     customerID: number,
     type: DashboardAlertType | undefined,
     page: number,
-    limit: number
+    limit: number,
+    propertyId?: number
   ): Promise<PaginatedResult<DashboardAlert>> {
-    const active = mockAssets.filter(
+    let active = mockAssets.filter(
       (a) => a.customerID === customerID && a.isActive
     );
+    if (propertyId !== undefined) {
+      active = active.filter((a) => a.propertyID === propertyId);
+    }
     const now = new Date();
     const dayMs = 86400000;
     const alerts: DashboardAlert[] = [];
@@ -288,10 +302,11 @@ export const mockDashboardProvider: DashboardProvider = {
   async getActivity(
     customerID: number,
     page: number,
-    limit: number
+    limit: number,
+    propertyId?: number
   ): Promise<PaginatedResult<ActivityEvent>> {
     // All mock activity is for customerID=1
-    const events =
+    let events =
       customerID === 1
         ? [...mockActivityEvents].sort(
             (a, b) =>
@@ -299,6 +314,20 @@ export const mockDashboardProvider: DashboardProvider = {
               new Date(a.timestamp).getTime()
           )
         : [];
+
+    // Filter activity to the scoped property via asset lookup
+    if (propertyId !== undefined) {
+      const propertyAssetIds = new Set(
+        mockAssets
+          .filter(
+            (a) => a.customerID === customerID && a.propertyID === propertyId
+          )
+          .map((a) => a.equipmentRecordID)
+      );
+      events = events.filter(
+        (e) => e.assetId !== null && propertyAssetIds.has(e.assetId)
+      );
+    }
 
     const total = events.length;
     const start = (page - 1) * limit;

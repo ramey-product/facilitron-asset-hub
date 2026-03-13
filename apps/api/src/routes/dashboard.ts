@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import {
+  dashboardStatsQuerySchema,
   dashboardAlertsQuerySchema,
   dashboardActivityQuerySchema,
 } from "@asset-hub/shared";
@@ -10,11 +11,16 @@ import type { AppEnv } from "../types/context.js";
 const dashboard = new Hono<AppEnv>();
 
 // GET /api/v2/dashboard/stats — summary KPIs
-dashboard.get("/stats", async (c) => {
-  const { customerID } = c.get("auth");
-  const stats = await dashboardService.getStats(customerID);
-  return c.json({ data: stats });
-});
+dashboard.get(
+  "/stats",
+  zValidator("query", dashboardStatsQuerySchema),
+  async (c) => {
+    const query = c.req.valid("query");
+    const { customerID } = c.get("auth");
+    const stats = await dashboardService.getStats(customerID, query.propertyId);
+    return c.json({ data: stats });
+  }
+);
 
 // GET /api/v2/dashboard/alerts — paginated alerts
 dashboard.get(
@@ -28,7 +34,8 @@ dashboard.get(
       customerID,
       query.type,
       query.page,
-      query.limit
+      query.limit,
+      query.propertyId
     );
     return c.json({ data: result.items, meta: result.meta });
   }
@@ -45,7 +52,8 @@ dashboard.get(
     const result = await dashboardService.getActivity(
       customerID,
       query.page,
-      query.limit
+      query.limit,
+      query.propertyId
     );
     return c.json({ data: result.items, meta: result.meta });
   }

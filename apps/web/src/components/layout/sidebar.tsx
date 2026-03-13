@@ -17,16 +17,19 @@ import {
   Moon,
   ChevronsUpDown,
   Building2,
-  GraduationCap,
+  MapPin,
   Check,
+  Search,
+  ScanLine,
 } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useTheme } from "./theme-provider";
-import { useOrg } from "./org-provider";
+import { useScope } from "./scope-provider";
 
 const navigation = [
   { name: "Hub Dashboard", href: "/dashboard", icon: LayoutDashboard, disabled: false },
   { name: "Assets", href: "/assets", icon: Box, disabled: false },
+  { name: "Scan Asset", href: "/scan", icon: ScanLine, disabled: false },
   { name: "Inventory", href: "/inventory", icon: Package, disabled: true, badge: "Coming Soon" },
   { name: "Procurement", href: "/procurement", icon: ShoppingCart, disabled: true, badge: "Coming Soon" },
 ];
@@ -35,34 +38,76 @@ const bottomNav = [
   { name: "Settings", href: "/settings", icon: Settings, disabled: false },
 ];
 
-const sectorIcons: Record<string, typeof Building2> = {
-  commercial: Building2,
-  education: GraduationCap,
-  municipal: Building2,
-};
+// Hardcoded org name for mock auth — will come from auth context later
+const ORG_NAME = "Rotten Robbie";
 
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const { currentOrg, allOrgs, switchOrg } = useOrg();
-  const [orgDropdownOpen, setOrgDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { propertyID, selectedProperty, properties, setPropertyScope, isLoading } = useScope();
+  const [scopePopoverOpen, setScopePopoverOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Close dropdown on outside click
+  // Close popover on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setOrgDropdownOpen(false);
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setScopePopoverOpen(false);
+        setSearchQuery("");
       }
     }
-    if (orgDropdownOpen) {
+    if (scopePopoverOpen) {
       document.addEventListener("mousedown", handleClick);
       return () => document.removeEventListener("mousedown", handleClick);
     }
-  }, [orgDropdownOpen]);
+  }, [scopePopoverOpen]);
 
-  const SectorIcon = sectorIcons[currentOrg.sector] ?? Building2;
+  // Close popover on Escape
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setScopePopoverOpen(false);
+        setSearchQuery("");
+      }
+    }
+    if (scopePopoverOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [scopePopoverOpen]);
+
+  // Focus search input when popover opens
+  useEffect(() => {
+    if (scopePopoverOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [scopePopoverOpen]);
+
+  // Filter and sort properties
+  const sortedProperties = useMemo(() => {
+    let filtered = [...properties];
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.city.toLowerCase().includes(q) ||
+          p.address.toLowerCase().includes(q)
+      );
+    }
+    return filtered.sort((a, b) => a.name.localeCompare(b.name));
+  }, [properties, searchQuery]);
+
+  const showSearch = properties.length > 10;
+
+  // Scope indicator label
+  const scopeLabel = selectedProperty
+    ? `${selectedProperty.name} - ${selectedProperty.city}`
+    : `All Properties (${properties.length})`;
+  const ScopeIcon = selectedProperty ? MapPin : Building2;
 
   return (
     <aside
@@ -88,32 +133,35 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Organization Switcher */}
+      {/* Scope Selector (expanded) */}
       {!collapsed && (
-        <div className="relative mx-4 mt-4" ref={dropdownRef}>
+        <div className="relative mx-4 mt-4" ref={popoverRef}>
           <button
-            onClick={() => setOrgDropdownOpen(!orgDropdownOpen)}
+            onClick={() => setScopePopoverOpen(!scopePopoverOpen)}
             className={cn(
               "w-full rounded-lg border border-[var(--sidebar-border)] bg-[var(--sidebar-accent)] p-3 text-left transition-all hover:border-[var(--primary)]/40 hover:bg-[var(--sidebar-accent)]/80",
-              orgDropdownOpen && "border-[var(--primary)]/60 ring-1 ring-[var(--primary)]/20"
+              scopePopoverOpen && "border-[var(--primary)]/60 ring-1 ring-[var(--primary)]/20"
             )}
-            aria-label="Switch organization"
-            aria-expanded={orgDropdownOpen}
+            aria-label="Change property scope"
+            aria-expanded={scopePopoverOpen}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5 min-w-0">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[var(--primary)]/10">
-                  <SectorIcon className="h-3.5 w-3.5 text-[var(--primary)]" />
+                  <Building2 className="h-3.5 w-3.5 text-[var(--primary)]" />
                 </div>
                 <div className="min-w-0">
                   <div className="text-[10px] font-medium uppercase tracking-wider text-[var(--muted-foreground)]">
                     Organization
                   </div>
                   <div className="mt-0.5 text-sm font-semibold text-[var(--foreground)] truncate">
-                    {currentOrg.name}
+                    {ORG_NAME}
                   </div>
-                  <div className="text-xs text-[var(--muted-foreground)]">
-                    {currentOrg.propertyCount} {currentOrg.propertyLabel}
+                  <div className="mt-0.5 flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+                    <ScopeIcon className="h-3 w-3 shrink-0" />
+                    <span className="truncate transition-opacity duration-200">
+                      {isLoading ? "Loading..." : scopeLabel}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -121,69 +169,173 @@ export function Sidebar() {
             </div>
           </button>
 
-          {/* Dropdown */}
-          {orgDropdownOpen && (
-            <div className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--card)] shadow-lg" role="listbox" aria-label="Organizations">
-              <div className="px-3 py-2">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
-                  Switch Organization
-                </span>
-              </div>
-              {allOrgs.map((org) => {
-                const Icon = sectorIcons[org.sector] ?? Building2;
-                const isActive = org.id === currentOrg.id;
-                return (
-                  <button
-                    key={org.id}
-                    onClick={() => {
-                      switchOrg(org.id);
-                      setOrgDropdownOpen(false);
-                    }}
+          {/* Scope popover */}
+          {scopePopoverOpen && (
+            <div
+              className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--card)] shadow-lg"
+              role="listbox"
+              aria-label="Property scope"
+            >
+              {/* Search (shown when >10 properties) */}
+              {showSearch && (
+                <div className="sticky top-0 border-b border-[var(--border)] bg-[var(--card)] p-2">
+                  <div className="relative">
+                    <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--muted-foreground)]" />
+                    <input
+                      ref={searchInputRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Filter properties..."
+                      className="h-8 w-full rounded-md border border-[var(--border)] bg-[var(--muted)] pl-8 pr-3 text-xs text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:outline-none focus:ring-1 focus:ring-[var(--ring)]"
+                      aria-label="Filter properties"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="max-h-[400px] overflow-y-auto">
+                {/* All Properties option */}
+                <button
+                  onClick={() => {
+                    setPropertyScope(null);
+                    setScopePopoverOpen(false);
+                    setSearchQuery("");
+                  }}
+                  className={cn(
+                    "flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors",
+                    propertyID === null
+                      ? "bg-[var(--primary)]/10"
+                      : "hover:bg-[var(--muted)]/50"
+                  )}
+                  role="option"
+                  aria-selected={propertyID === null}
+                >
+                  <div
                     className={cn(
-                      "flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors",
-                      isActive
-                        ? "bg-[var(--primary)]/10"
-                        : "hover:bg-[var(--muted)]/50"
+                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-md",
+                      propertyID === null ? "bg-[var(--primary)]/20" : "bg-[var(--muted)]"
                     )}
-                    role="option"
-                    aria-selected={isActive}
                   >
-                    <div className={cn(
-                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-md",
-                      isActive ? "bg-[var(--primary)]/20" : "bg-[var(--muted)]"
-                    )}>
-                      <Icon className={cn("h-4 w-4", isActive ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]")} />
+                    <Building2
+                      className={cn(
+                        "h-3.5 w-3.5",
+                        propertyID === null
+                          ? "text-[var(--primary)]"
+                          : "text-[var(--muted-foreground)]"
+                      )}
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div
+                      className={cn(
+                        "text-sm font-medium",
+                        propertyID === null
+                          ? "text-[var(--primary)]"
+                          : "text-[var(--foreground)]"
+                      )}
+                    >
+                      All Properties
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className={cn("text-sm font-medium truncate", isActive ? "text-[var(--primary)]" : "text-[var(--foreground)]")}>
-                        {org.name}
-                      </div>
-                      <div className="text-xs text-[var(--muted-foreground)]">
-                        {org.propertyCount} {org.propertyLabel} · {org.sector === "education" ? "Public Sector" : "Commercial"}
-                      </div>
+                    <div className="text-xs text-[var(--muted-foreground)]">
+                      {properties.length} total
                     </div>
-                    {isActive && <Check className="h-4 w-4 shrink-0 text-[var(--primary)]" />}
-                  </button>
-                );
-              })}
+                  </div>
+                  {propertyID === null && (
+                    <Check className="h-4 w-4 shrink-0 text-[var(--primary)]" />
+                  )}
+                </button>
+
+                {/* Divider */}
+                <div className="mx-3 border-t border-[var(--border)]" />
+
+                {/* Property list */}
+                {isLoading && (
+                  <div className="px-3 py-4 text-center text-xs text-[var(--muted-foreground)]">
+                    Loading properties...
+                  </div>
+                )}
+
+                {!isLoading && sortedProperties.length === 0 && searchQuery && (
+                  <div className="px-3 py-4 text-center text-xs text-[var(--muted-foreground)]">
+                    No properties match &ldquo;{searchQuery}&rdquo;
+                  </div>
+                )}
+
+                {sortedProperties.map((property) => {
+                  const isActive = propertyID === property.id;
+                  return (
+                    <button
+                      key={property.id}
+                      onClick={() => {
+                        setPropertyScope(property.id);
+                        setScopePopoverOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className={cn(
+                        "flex w-full items-center gap-3 px-3 py-2 text-left transition-colors",
+                        isActive
+                          ? "bg-[var(--primary)]/10"
+                          : "hover:bg-[var(--muted)]/50"
+                      )}
+                      role="option"
+                      aria-selected={isActive}
+                    >
+                      <div
+                        className={cn(
+                          "flex h-7 w-7 shrink-0 items-center justify-center rounded-md",
+                          isActive ? "bg-[var(--primary)]/20" : "bg-[var(--muted)]"
+                        )}
+                      >
+                        <MapPin
+                          className={cn(
+                            "h-3.5 w-3.5",
+                            isActive
+                              ? "text-[var(--primary)]"
+                              : "text-[var(--muted-foreground)]"
+                          )}
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div
+                          className={cn(
+                            "text-sm font-medium truncate",
+                            isActive
+                              ? "text-[var(--primary)]"
+                              : "text-[var(--foreground)]"
+                          )}
+                        >
+                          {property.name}
+                        </div>
+                        <div className="text-xs text-[var(--muted-foreground)]">
+                          {property.city}, {property.state} · {property.assetCount} assets
+                        </div>
+                      </div>
+                      {isActive && (
+                        <Check className="h-4 w-4 shrink-0 text-[var(--primary)]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
       )}
 
-      {/* Collapsed org icon */}
+      {/* Collapsed scope icon */}
       {collapsed && (
         <div className="mx-auto mt-4">
           <button
             onClick={() => {
               setCollapsed(false);
-              setTimeout(() => setOrgDropdownOpen(true), 350);
+              setTimeout(() => setScopePopoverOpen(true), 350);
             }}
             className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--primary)]/10 hover:bg-[var(--primary)]/20 transition-colors"
-            title={currentOrg.name}
-            aria-label={`Expand sidebar and switch organization. Current: ${currentOrg.name}`}
+            title={selectedProperty ? selectedProperty.name : "All Properties"}
+            aria-label={`Expand sidebar and change scope. Current: ${selectedProperty ? selectedProperty.name : "All Properties"}`}
           >
-            <SectorIcon className="h-4 w-4 text-[var(--primary)]" />
+            <ScopeIcon className="h-4 w-4 text-[var(--primary)]" />
           </button>
         </div>
       )}

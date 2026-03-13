@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { RefreshCw, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useOrg } from "@/components/layout/org-provider";
+import { useScope } from "@/components/layout/scope-provider";
 import { useDashboardStats } from "@/hooks/use-dashboard";
 import { KpiCards } from "@/components/features/dashboard/kpi-cards";
 import { StatusDonutChart } from "@/components/features/dashboard/status-donut-chart";
@@ -17,11 +17,11 @@ import { useQueryClient } from "@tanstack/react-query";
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 export default function DashboardPage() {
-  const { currentOrg } = useOrg();
+  const { propertyID, selectedProperty } = useScope();
   const queryClient = useQueryClient();
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
 
-  const { data, isLoading, isError } = useDashboardStats(REFRESH_INTERVAL_MS);
+  const { data, isLoading, isError } = useDashboardStats(REFRESH_INTERVAL_MS, propertyID);
   const stats = data?.data;
 
   const handleManualRefresh = useCallback(() => {
@@ -51,7 +51,9 @@ export default function DashboardPage() {
             </nav>
             <h1 className="text-xl font-bold text-[var(--foreground)]">Asset Hub</h1>
             <p className="text-sm text-[var(--muted-foreground)]">
-              {currentOrg.name}
+              {selectedProperty
+                ? `${selectedProperty.name} — ${selectedProperty.city}, ${selectedProperty.state}`
+                : `All Properties${stats ? ` · ${stats.totalProperties} sites` : ""}`}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -143,8 +145,8 @@ export default function DashboardPage() {
 
         {/* Bottom row: alerts + activity */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <AlertsWidget refetchInterval={REFRESH_INTERVAL_MS} />
-          <ActivityFeed refetchInterval={REFRESH_INTERVAL_MS} />
+          <AlertsWidget refetchInterval={REFRESH_INTERVAL_MS} propertyId={propertyID} />
+          <ActivityFeed refetchInterval={REFRESH_INTERVAL_MS} propertyId={propertyID} />
         </div>
       </div>
     </div>

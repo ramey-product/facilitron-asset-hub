@@ -112,10 +112,10 @@ PHASE 3 — Hub Experience (P0-12, P0-05, P0-09, P0-14)
   → qa extends test coverage
   → GATE 3: Human reviews Hub Experience
 
-PHASE 4 — Data & Mobile (P0-07, P0-08, P0-11, P0-16)
-  → sr-backend builds import API + document storage + scanning + FIT endpoints
-  → frontend-lead builds Bulk Import wizard + Rich Records
-  → frontend-hub builds Mobile Scanning + FIT Modal
+PHASE 4 — Data & Mobile (P0-06, P0-07, P0-08, P0-11, P0-16)
+  → sr-backend builds properties API + property scope filtering + import API + document storage + scanning + FIT endpoints
+  → frontend-lead builds Scope Provider + Sidebar Property Selector + Bulk Import wizard + Rich Records
+  → frontend-hub builds Mobile Scanning + FIT Modal + Dashboard scope integration
   → qa extends test coverage
   → GATE 4: Human reviews Data & Mobile — P0 COMPLETE
 

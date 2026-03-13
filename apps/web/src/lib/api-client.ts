@@ -94,7 +94,8 @@ export const apiClient = {
       fetchApi(`/api/v2/assets/${assetId}/conditions`, { method: "POST", body: data }),
   },
   dashboard: {
-    stats: () => fetchApi("/api/v2/dashboard/stats"),
+    stats: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/dashboard/stats", { params }),
     alerts: (params?: Record<string, string | number>) =>
       fetchApi("/api/v2/dashboard/alerts", { params }),
     activity: (params?: Record<string, string | number>) =>
@@ -116,6 +117,12 @@ export const apiClient = {
     reasons: () =>
       fetchApi("/api/v2/status-reasons"),
   },
+  properties: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/properties", { params }),
+    getById: (id: number) =>
+      fetchApi(`/api/v2/properties/${id}`),
+  },
   costs: {
     getSummary: (assetId: number) =>
       fetchApi(`/api/v2/assets/${assetId}/costs`),
@@ -123,5 +130,47 @@ export const apiClient = {
       fetchApi(`/api/v2/assets/${assetId}/costs/history`),
     getTopCost: (params?: Record<string, string | number>) =>
       fetchApi("/api/v2/assets/costs/top", { params }),
+  },
+  import: {
+    validate: (data: unknown) =>
+      fetchApi("/api/v2/import/validate", { method: "POST", body: data }),
+    execute: (data: unknown) =>
+      fetchApi("/api/v2/import/execute", { method: "POST", body: data }),
+    history: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/import/history", { params }),
+    template: () =>
+      fetchApi("/api/v2/import/template"),
+  },
+  photos: {
+    list: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/photos`),
+    upload: (assetId: number, data: unknown) =>
+      fetchApi(`/api/v2/assets/${assetId}/photos`, { method: "POST", body: data }),
+    delete: (assetId: number, photoId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/photos/${photoId}`, { method: "DELETE" }),
+    setPrimary: (assetId: number, photoId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/photos/${photoId}/primary`, { method: "PUT" }),
+  },
+  documents: {
+    list: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/documents`),
+    upload: (assetId: number, data: unknown) =>
+      fetchApi(`/api/v2/assets/${assetId}/documents`, { method: "POST", body: data }),
+    delete: (assetId: number, docId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/documents/${docId}`, { method: "DELETE" }),
+  },
+  customFields: {
+    definitions: () =>
+      fetchApi("/api/v2/custom-fields"),
+    getValues: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/custom-fields`),
+    updateValues: (assetId: number, data: unknown) =>
+      fetchApi(`/api/v2/assets/${assetId}/custom-fields`, { method: "PUT", body: data }),
+  },
+  fit: {
+    summary: (assetId: number) =>
+      fetchApi(`/api/v2/assets/${assetId}/fit-summary`),
+    inspections: (assetId: number, params?: Record<string, string | number>) =>
+      fetchApi(`/api/v2/assets/${assetId}/fit-inspections`, { params }),
   },
 };

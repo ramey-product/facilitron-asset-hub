@@ -70,7 +70,12 @@ export const mockAssetProvider: AssetProvider = {
       }
     }
 
-    // Filter by location (property)
+    // Filter by property (scope)
+    if (query.propertyId) {
+      items = items.filter((a) => a.propertyID === query.propertyId);
+    }
+
+    // Filter by location (property — legacy param)
     if (query.locationID) {
       items = items.filter((a) => a.propertyID === query.locationID);
     }
