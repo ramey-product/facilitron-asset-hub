@@ -24,6 +24,11 @@ import {
   Warehouse,
   Truck,
   FileSearch,
+  BarChart3,
+  PackageOpen,
+  AlertTriangle,
+  Bell,
+  ArrowLeftRight,
 } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useTheme } from "./theme-provider";
@@ -40,6 +45,16 @@ const inventoryNav = [
   { name: "Stock Matrix", href: "/inventory/stock-matrix", icon: Warehouse, disabled: false },
   { name: "Vendor Directory", href: "/procurement/vendors", icon: Truck, disabled: false },
   { name: "Audit Trail", href: "/inventory/audit", icon: FileSearch, disabled: false },
+  { name: "Discrepancies", href: "/inventory/discrepancies", icon: AlertTriangle, disabled: false },
+  { name: "Reorder Alerts", href: "/inventory/alerts", icon: Bell, disabled: false },
+  { name: "Kits", href: "/inventory/kits", icon: Package, disabled: false },
+  { name: "Transfers", href: "/inventory/transfers", icon: ArrowLeftRight, disabled: false },
+];
+
+const procurementNav = [
+  { name: "Purchase Orders", href: "/procurement/orders", icon: ShoppingCart, disabled: false },
+  { name: "Receiving", href: "/procurement/receiving", icon: PackageOpen, disabled: false },
+  { name: "Spend Reports", href: "/procurement/reports", icon: BarChart3, disabled: false },
 ];
 
 const bottomNav = [
@@ -393,6 +408,43 @@ export function Sidebar() {
         )}
         {collapsed && <div className="mt-4" />}
         {inventoryNav.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          return (
+            <Link
+              key={item.name}
+              href={item.disabled ? "#" : item.href}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
+                isActive && !item.disabled
+                  ? "bg-[var(--primary)]/10 text-[var(--primary)]"
+                  : item.disabled
+                  ? "cursor-not-allowed text-[var(--muted-foreground)]/50"
+                  : "text-[var(--sidebar-foreground)] hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-accent-foreground)]"
+              )}
+              onClick={(e) => item.disabled && e.preventDefault()}
+              aria-current={isActive && !item.disabled ? "page" : undefined}
+              aria-disabled={item.disabled}
+            >
+              {item.disabled ? (
+                <Lock className="h-4 w-4 shrink-0 opacity-40" />
+              ) : (
+                <item.icon className="h-4 w-4 shrink-0" />
+              )}
+              {!collapsed && (
+                <span className="flex-1">{item.name}</span>
+              )}
+            </Link>
+          );
+        })}
+
+        {/* Procurement Section */}
+        {!collapsed && (
+          <div className="mt-6 mb-2 px-3 text-[10px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
+            Procurement
+          </div>
+        )}
+        {collapsed && <div className="mt-2" />}
+        {procurementNav.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <Link
