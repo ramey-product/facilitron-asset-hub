@@ -23,7 +23,7 @@ export interface ParsedFile {
   filename: string;
   size: number;
   headers: string[];
-  rows: Record<string, unknown>[];
+  rows: Record<string, string>[];
 }
 
 export function ImportWizard() {

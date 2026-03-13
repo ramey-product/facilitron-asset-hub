@@ -116,7 +116,7 @@ describe("assetService.list", () => {
     const result = await assetService.list(CUSTOMER_ID, {
       ...baseQuery,
       limit: 100,
-      propertyId: 1,
+      propertyID: 1,
     });
     expect(result.items.length).toBeGreaterThan(0);
     for (const asset of result.items) {

@@ -679,7 +679,7 @@ export const mockAssets: AssetRecord[] = [
     locationName: "Cafeteria - Kitchen",
     categorySlug: "plumbing",
     categoryName: "Plumbing",
-    manufacturerName: undefined,
+    manufacturerName: null,
     equipmentTypeName: "Water Heater",
   },
 
@@ -792,7 +792,7 @@ export const mockAssets: AssetRecord[] = [
     locationName: "Cafeteria - Kitchen",
     categorySlug: "fire-safety",
     categoryName: "Fire Safety",
-    manufacturerName: undefined,
+    manufacturerName: null,
     equipmentTypeName: "Fire Alarm Panel",
   },
   {
@@ -942,7 +942,7 @@ export const mockAssets: AssetRecord[] = [
     locationName: "Main Building - Mechanical Room",
     categorySlug: "structural",
     categoryName: "Structural",
-    manufacturerName: undefined,
+    manufacturerName: null,
     equipmentTypeName: "Elevator",
   },
 
@@ -978,10 +978,10 @@ export const mockAssets: AssetRecord[] = [
     statusChangedAt: "2025-11-01T00:00:00.000Z",
     statusChangedBy: 1,
     propertyName: "Lincoln High School",
-    locationName: undefined,
+    locationName: null,
     categorySlug: "grounds",
     categoryName: "Grounds",
-    manufacturerName: undefined,
+    manufacturerName: null,
     equipmentTypeName: "Irrigation Controller",
   },
   {
@@ -1015,10 +1015,10 @@ export const mockAssets: AssetRecord[] = [
     statusChangedAt: "2025-11-01T00:00:00.000Z",
     statusChangedBy: 1,
     propertyName: "Roosevelt Middle School",
-    locationName: undefined,
+    locationName: null,
     categorySlug: "grounds",
     categoryName: "Grounds",
-    manufacturerName: undefined,
+    manufacturerName: null,
     equipmentTypeName: "Irrigation Controller",
   },
   {

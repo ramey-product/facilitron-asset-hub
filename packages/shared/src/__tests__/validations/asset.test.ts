@@ -63,9 +63,9 @@ describe("assetQuerySchema", () => {
     expect(() => assetQuerySchema.parse({ condition: "broken" })).toThrow();
   });
 
-  it("accepts optional propertyId and coerces to number", () => {
-    const result = assetQuerySchema.parse({ propertyId: "5" });
-    expect(result.propertyId).toBe(5);
+  it("accepts optional propertyID and coerces to number", () => {
+    const result = assetQuerySchema.parse({ propertyID: "5" });
+    expect(result.propertyID).toBe(5);
   });
 
   it("accepts optional categoryID and coerces to number", () => {
@@ -82,9 +82,13 @@ describe("assetQuerySchema", () => {
     expect(() => assetQuerySchema.parse({ sortOrder: "random" })).toThrow();
   });
 
-  it("accepts optional sortBy string", () => {
+  it("accepts valid sortBy enum value", () => {
     const result = assetQuerySchema.parse({ sortBy: "equipmentName" });
     expect(result.sortBy).toBe("equipmentName");
+  });
+
+  it("rejects invalid sortBy value", () => {
+    expect(() => assetQuerySchema.parse({ sortBy: "notAField" })).toThrow();
   });
 });
 

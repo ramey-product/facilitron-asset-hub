@@ -2,8 +2,12 @@
  * Provider interfaces — both mock and Drizzle implementations satisfy these contracts.
  */
 
-import type { PaginationMeta } from "@asset-hub/shared";
 import type {
+  PaginationMeta,
+  AssetRecord,
+  ListAssetsQuery,
+  CreateAssetInput,
+  UpdateAssetInput,
   DashboardStats,
   DashboardAlert,
   DashboardAlertType,
@@ -36,90 +40,15 @@ import type {
   FitInspectionRecord,
 } from "@asset-hub/shared";
 
+// Re-export asset types so existing imports from providers.ts still work
+export type { AssetRecord, ListAssetsQuery, CreateAssetInput, UpdateAssetInput };
+
 // ---- Generic pagination wrapper ----
 
 export interface PaginatedResult<T> {
   items: T[];
   meta: PaginationMeta;
 }
-
-// ---- Asset types (aligned with Drizzle Equipment schema) ----
-
-export interface AssetRecord {
-  equipmentRecordID: number;
-  customerID: number;
-  propertyID: number | null;
-  assetLocationID: number | null;
-  equipmentName: string;
-  equipmentDescription: string | null;
-  equipmentTypeID: number | null;
-  serialNumber: string | null;
-  equipmentBarCodeID: string | null;
-  manufacturerRecordID: number | null;
-  modelNumber: string | null;
-  acquisitionDate: string | null;
-  acquisitionCost: number | null;
-  warrantyExpiration: string | null;
-  expectedLifeYears: number | null;
-  lifecycleStatus: string;
-  conditionRating: number | null;
-  lastConditionDate: string | null;
-  isActive: boolean;
-  dateCreated: string;
-  dateModified: string | null;
-  createdBy: number | null;
-  modifiedBy: number | null;
-  notes: string | null;
-  // Phase 3: Hierarchy support
-  parentEquipmentId: number | null;
-  // Phase 3: Online/Offline status
-  operationalStatus: "online" | "offline";
-  statusReasonCode: string | null;
-  statusChangedAt: string | null;
-  statusChangedBy: number | null;
-  // Joined fields for list display
-  propertyName?: string;
-  locationName?: string;
-  categorySlug?: string;
-  categoryName?: string;
-  manufacturerName?: string;
-  equipmentTypeName?: string;
-}
-
-export interface ListAssetsQuery {
-  page: number;
-  limit: number;
-  search?: string;
-  status?: string;
-  condition?: string;
-  categoryID?: number;
-  locationID?: number;
-  propertyId?: number;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-}
-
-export interface CreateAssetInput {
-  equipmentName: string;
-  equipmentDescription?: string;
-  equipmentTypeID?: number;
-  propertyID?: number;
-  assetLocationID?: number;
-  serialNumber?: string;
-  equipmentBarCodeID?: string;
-  manufacturerRecordID?: number;
-  modelNumber?: string;
-  acquisitionDate?: string;
-  acquisitionCost?: number;
-  warrantyExpiration?: string;
-  expectedLifeYears?: number;
-  lifecycleStatus?: string;
-  conditionRating?: number;
-  notes?: string;
-  parentEquipmentId?: number | null;
-}
-
-export type UpdateAssetInput = Partial<CreateAssetInput>;
 
 export interface AssetProvider {
   list(customerID: number, query: ListAssetsQuery): Promise<PaginatedResult<AssetRecord>>;

@@ -161,7 +161,6 @@ export const mockDashboardProvider: DashboardProvider = {
 
     return {
       totalAssets: active.length,
-      activeAssets: active.filter((a) => a.lifecycleStatus === "Active").length,
       activeCount: active.filter((a) => a.lifecycleStatus === "Active").length,
       flaggedCount: active.filter((a) => a.lifecycleStatus === "Flagged").length,
       criticalCount,

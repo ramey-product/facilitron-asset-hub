@@ -56,7 +56,7 @@ assets.post("/", zValidator("json", createAssetSchema), async (c) => {
     conditionRating: body.assetCondition
       ? conditionToRating(body.assetCondition)
       : undefined,
-    propertyID: body.locationID,
+    propertyID: body.propertyID,
     equipmentTypeID: body.categoryID,
   });
   return c.json({ data: asset }, 201);
@@ -89,7 +89,7 @@ assets.put("/:id", zValidator("json", updateAssetSchema), async (c) => {
     conditionRating: body.assetCondition
       ? conditionToRating(body.assetCondition)
       : undefined,
-    propertyID: body.locationID,
+    propertyID: body.propertyID,
     equipmentTypeID: body.categoryID,
   });
 

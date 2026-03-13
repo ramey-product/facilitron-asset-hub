@@ -80,7 +80,7 @@ describe("mockDashboardProvider.getStats — unscoped", () => {
   it("returns zeroed stats for unknown customerID", async () => {
     const stats = await mockDashboardProvider.getStats(99999);
     expect(stats.totalAssets).toBe(0);
-    expect(stats.activeAssets).toBe(0);
+    expect(stats.activeCount).toBe(0);
     expect(stats.assetsByStatus).toHaveLength(0);
     expect(stats.assetsByCategory).toHaveLength(0);
   });

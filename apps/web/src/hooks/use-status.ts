@@ -2,27 +2,12 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
+import type { StatusRecord, StatusReason } from "@asset-hub/shared";
 
 // ---- Types ----
 
-export interface AssetStatus {
-  assetId: number;
-  isOnline: boolean;
-  reasonCode: string | null;
-  reasonLabel: string | null;
-  notes: string | null;
-  updatedAt: string;
-  updatedBy: string | null;
-}
-
-export interface StatusReason {
-  code: string;
-  label: string;
-  requiresNotes: boolean;
-}
-
-interface AssetStatusResponse {
-  data: AssetStatus;
+interface StatusRecordResponse {
+  data: StatusRecord;
 }
 
 interface StatusReasonsResponse {
@@ -32,9 +17,9 @@ interface StatusReasonsResponse {
 // ---- Hooks ----
 
 export function useAssetStatus(assetId: number) {
-  return useQuery<AssetStatusResponse>({
+  return useQuery<StatusRecordResponse>({
     queryKey: ["status", assetId],
-    queryFn: () => apiClient.status.get(assetId) as Promise<AssetStatusResponse>,
+    queryFn: () => apiClient.status.get(assetId) as Promise<StatusRecordResponse>,
     enabled: assetId > 0,
     staleTime: 30_000,
   });
@@ -61,7 +46,11 @@ export function useUpdateStatus() {
       isOnline: boolean;
       reasonCode?: string;
       notes?: string;
-    }) => apiClient.status.update(assetId, { isOnline, reasonCode, notes }),
+    }) => apiClient.status.update(assetId, {
+      status: isOnline ? "online" : "offline",
+      reasonCode,
+      notes,
+    }),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["status", variables.assetId] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
@@ -69,3 +58,5 @@ export function useUpdateStatus() {
     },
   });
 }
+
+export type { StatusRecord, StatusReason };

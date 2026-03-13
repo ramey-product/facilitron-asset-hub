@@ -71,13 +71,8 @@ export const mockAssetProvider: AssetProvider = {
     }
 
     // Filter by property (scope)
-    if (query.propertyId) {
-      items = items.filter((a) => a.propertyID === query.propertyId);
-    }
-
-    // Filter by location (property — legacy param)
-    if (query.locationID) {
-      items = items.filter((a) => a.propertyID === query.locationID);
+    if (query.propertyID) {
+      items = items.filter((a) => a.propertyID === query.propertyID);
     }
 
     // Sorting
@@ -197,12 +192,12 @@ export const mockAssetProvider: AssetProvider = {
       statusReasonCode: null,
       statusChangedAt: null,
       statusChangedBy: null,
-      propertyName: property?.propertyName,
-      locationName: location?.locationName,
-      categorySlug: eqType?.categorySlug,
-      categoryName: category?.name,
-      manufacturerName: manufacturer?.manufacturerName,
-      equipmentTypeName: eqType?.equipmentTypeName,
+      propertyName: property?.propertyName ?? null,
+      locationName: location?.locationName ?? null,
+      categorySlug: eqType?.categorySlug ?? null,
+      categoryName: category?.name ?? null,
+      manufacturerName: manufacturer?.manufacturerName ?? null,
+      equipmentTypeName: eqType?.equipmentTypeName ?? null,
     };
 
     assets.push(newAsset);
@@ -232,7 +227,7 @@ export const mockAssetProvider: AssetProvider = {
               p.propertyID === data.propertyID && p.customerID === customerID
           )
         : undefined;
-      propertyName = property?.propertyName;
+      propertyName = property?.propertyName ?? null;
     }
 
     let locationName = existing.locationName;
@@ -244,7 +239,7 @@ export const mockAssetProvider: AssetProvider = {
               l.customerID === customerID
           )
         : undefined;
-      locationName = location?.locationName;
+      locationName = location?.locationName ?? null;
     }
 
     let manufacturerName = existing.manufacturerName;
@@ -256,7 +251,7 @@ export const mockAssetProvider: AssetProvider = {
               m.customerID === customerID
           )
         : undefined;
-      manufacturerName = manufacturer?.manufacturerName;
+      manufacturerName = manufacturer?.manufacturerName ?? null;
     }
 
     const updated: AssetRecord = {

@@ -43,6 +43,10 @@ app.use("*", authMiddleware);
 app.route("/health", health);
 
 // Routes — API v2 namespace
+// Static/specific asset sub-routes MUST be registered before the generic /assets
+// route to prevent /:id from swallowing them.
+app.route("/api/v2/assets/costs/top", topCosts);
+app.route("/api/v2/assets", hierarchies);
 app.route("/api/v2/assets", assets);
 app.route("/api/v2/settings", settings);
 app.route("/api/v2/manufacturers", manufacturers);
@@ -53,10 +57,8 @@ app.route("/api/v2/properties", properties);
 
 // Phase 3: Hub Experience routes
 app.route("/api/v2/dashboard", dashboard);
-app.route("/api/v2/assets", hierarchies);
 app.route("/api/v2/assets", status);
 app.route("/api/v2/assets", costs);
-app.route("/api/v2/assets/costs/top", topCosts);
 app.route("/api/v2/status-reasons", statusReasons);
 
 // Phase 4: Bulk Import

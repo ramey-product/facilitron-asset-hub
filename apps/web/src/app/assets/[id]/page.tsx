@@ -157,16 +157,20 @@ export default function AssetDetailPage({ params }: PageProps) {
 
       {/* Tabs */}
       <div className="border-b border-[var(--border)] px-4 sm:px-8 overflow-x-auto">
-        <nav className="flex gap-6 min-w-max">
+        <nav role="tablist" className="flex gap-6 min-w-max">
           {tabs.map((tab) => {
             const Icon = tab.icon;
+            const isActive = activeTab === tab.key;
             return (
               <button
                 key={tab.key}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`panel-${tab.key}`}
                 onClick={() => setActiveTab(tab.key)}
                 className={cn(
                   "flex items-center gap-2 border-b-2 px-1 py-3 text-sm font-medium transition-colors whitespace-nowrap",
-                  activeTab === tab.key
+                  isActive
                     ? "border-[var(--primary)] text-[var(--primary)]"
                     : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                 )}
@@ -180,7 +184,7 @@ export default function AssetDetailPage({ params }: PageProps) {
       </div>
 
       {/* Tab Content */}
-      <div className="p-4 sm:p-8">
+      <div className="p-4 sm:p-8" role="tabpanel" id={`panel-${activeTab}`} tabIndex={0}>
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main info — 2 cols on desktop */}

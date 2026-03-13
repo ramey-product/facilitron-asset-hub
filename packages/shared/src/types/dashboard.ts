@@ -4,7 +4,6 @@
 
 export interface DashboardStats {
   totalAssets: number;
-  activeAssets: number;
   activeCount: number;
   flaggedCount: number;
   criticalCount: number;

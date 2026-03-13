@@ -217,7 +217,7 @@ describe("importService.validateImport", () => {
   });
 
   it("correctly counts errorRows when multiple rows fail", async () => {
-    const rows = [
+    const rows: Record<string, string>[] = [
       VALID_ROW,
       { categoryName: "HVAC", propertyName: "Lincoln High School" }, // missing equipmentName
       { equipmentName: "Pump", propertyName: "Lincoln High School" }, // missing categoryName
@@ -291,7 +291,7 @@ describe("importService.executeImport", () => {
 
   it("processes multiple rows and sums counts", async () => {
     const uniquePrefix = `MULTI-${Date.now()}`;
-    const rows = [
+    const rows: Record<string, string>[] = [
       {
         equipmentName: `${uniquePrefix}-A`,
         categoryName: "HVAC",

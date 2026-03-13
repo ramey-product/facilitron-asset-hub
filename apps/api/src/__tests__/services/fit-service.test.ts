@@ -46,8 +46,8 @@ describe("fitService.getSummary", () => {
 
   it("nextScheduledDate is after lastInspectionDate", async () => {
     const summary = await fitService.getSummary(CUSTOMER_ID, KNOWN_ASSET_ID);
-    const last = new Date(summary!.lastInspectionDate).getTime();
-    const next = new Date(summary!.nextScheduledDate).getTime();
+    const last = new Date(summary!.lastInspectionDate!).getTime();
+    const next = new Date(summary!.nextScheduledDate!).getTime();
     expect(next).toBeGreaterThan(last);
   });
 

@@ -12,6 +12,9 @@ import { mockAssets } from "./data/assets.js";
 import { mockStatusReasons } from "./data/status-reasons.js";
 import { mockStatusHistory } from "./data/status-history.js";
 
+// Deep copy of assets for in-memory mutations — never mutate shared seed data
+const mutableAssets = mockAssets.map((a) => ({ ...a }));
+
 // Working copy for in-memory mutations
 const statusHistory = [...mockStatusHistory];
 let nextHistoryId =
@@ -22,7 +25,7 @@ export const mockStatusProvider: StatusProvider = {
     customerID: number,
     assetId: number
   ): Promise<StatusRecord | null> {
-    const asset = mockAssets.find(
+    const asset = mutableAssets.find(
       (a) =>
         a.customerID === customerID &&
         a.equipmentRecordID === assetId &&
@@ -47,7 +50,7 @@ export const mockStatusProvider: StatusProvider = {
     notes: string | null,
     changedBy: number
   ): Promise<StatusRecord | null> {
-    const idx = mockAssets.findIndex(
+    const idx = mutableAssets.findIndex(
       (a) =>
         a.customerID === customerID &&
         a.equipmentRecordID === assetId &&
@@ -55,7 +58,7 @@ export const mockStatusProvider: StatusProvider = {
     );
     if (idx === -1) return null;
 
-    const asset = mockAssets[idx]!;
+    const asset = mutableAssets[idx]!;
     const now = new Date().toISOString();
     const previousStatus = asset.operationalStatus;
 
@@ -73,7 +76,7 @@ export const mockStatusProvider: StatusProvider = {
     });
 
     // Update asset in-memory
-    mockAssets[idx] = {
+    mutableAssets[idx] = {
       ...asset,
       operationalStatus: status,
       statusReasonCode: status === "offline" ? reasonCode : null,
@@ -99,7 +102,7 @@ export const mockStatusProvider: StatusProvider = {
     limit: number
   ): Promise<PaginatedResult<StatusHistoryEntry>> {
     // Verify asset belongs to customer
-    const asset = mockAssets.find(
+    const asset = mutableAssets.find(
       (a) =>
         a.customerID === customerID && a.equipmentRecordID === assetId
     );

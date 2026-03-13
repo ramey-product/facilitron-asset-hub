@@ -11,7 +11,6 @@ describe("dashboardService.getStats", () => {
     const stats = await dashboardService.getStats(CUSTOMER_ID);
     expect(stats).toMatchObject({
       totalAssets: expect.any(Number),
-      activeAssets: expect.any(Number),
       activeCount: expect.any(Number),
       flaggedCount: expect.any(Number),
       criticalCount: expect.any(Number),
@@ -30,12 +29,7 @@ describe("dashboardService.getStats", () => {
   it("returns non-zero asset counts for customerID 1", async () => {
     const stats = await dashboardService.getStats(CUSTOMER_ID);
     expect(stats.totalAssets).toBeGreaterThan(0);
-    expect(stats.activeAssets).toBeGreaterThan(0);
-  });
-
-  it("activeCount and activeAssets match", async () => {
-    const stats = await dashboardService.getStats(CUSTOMER_ID);
-    expect(stats.activeCount).toBe(stats.activeAssets);
+    expect(stats.activeCount).toBeGreaterThan(0);
   });
 
   it("returns assetsByStatus as array of {status, count}", async () => {
@@ -83,7 +77,7 @@ describe("dashboardService.getStats", () => {
   it("returns zero counts for unknown customerID", async () => {
     const stats = await dashboardService.getStats(99999);
     expect(stats.totalAssets).toBe(0);
-    expect(stats.activeAssets).toBe(0);
+    expect(stats.activeCount).toBe(0);
   });
 
   it("propertyId filter reduces totalAssets vs unscoped", async () => {

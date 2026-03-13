@@ -2,48 +2,9 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
+import type { AssetRecord, PaginationMeta } from "@asset-hub/shared";
 
-// ---- Types matching API response shapes ----
-
-export interface AssetRecord {
-  equipmentRecordID: number;
-  customerID: number;
-  propertyID: number | null;
-  assetLocationID: number | null;
-  equipmentName: string;
-  equipmentDescription: string | null;
-  equipmentTypeID: number | null;
-  serialNumber: string | null;
-  equipmentBarCodeID: string | null;
-  manufacturerRecordID: number | null;
-  modelNumber: string | null;
-  acquisitionDate: string | null;
-  acquisitionCost: number | null;
-  warrantyExpiration: string | null;
-  expectedLifeYears: number | null;
-  lifecycleStatus: string;
-  conditionRating: number | null;
-  lastConditionDate: string | null;
-  isActive: boolean;
-  dateCreated: string;
-  dateModified: string | null;
-  createdBy: number | null;
-  modifiedBy: number | null;
-  notes: string | null;
-  propertyName?: string;
-  locationName?: string;
-  categorySlug?: string;
-  categoryName?: string;
-  manufacturerName?: string;
-  equipmentTypeName?: string;
-}
-
-interface PaginationMeta {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-}
+export type { AssetRecord };
 
 interface AssetListResponse {
   data: AssetRecord[];
