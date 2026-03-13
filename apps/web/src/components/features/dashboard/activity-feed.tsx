@@ -62,7 +62,7 @@ export function ActivityFeed({ refetchInterval }: ActivityFeedProps) {
             <div className="space-y-0.5">
               {events.map((event) => (
                 <div
-                  key={event.eventId}
+                  key={event.id}
                   className="flex items-start gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-[var(--muted)]/50"
                 >
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary)]/10">
@@ -71,7 +71,7 @@ export function ActivityFeed({ refetchInterval }: ActivityFeedProps) {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs font-medium text-[var(--foreground)]">
-                        {event.userName}
+                        {event.actor}
                       </span>
                       <span className="text-xs text-[var(--muted-foreground)]">
                         {event.description}
@@ -82,7 +82,7 @@ export function ActivityFeed({ refetchInterval }: ActivityFeedProps) {
                         {event.assetName}
                       </span>
                       <span className="shrink-0 text-[10px] text-[var(--muted-foreground)]">
-                        {timeAgo(event.occurredAt)}
+                        {timeAgo(event.timestamp)}
                       </span>
                     </div>
                   </div>

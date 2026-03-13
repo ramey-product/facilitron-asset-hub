@@ -10,6 +10,8 @@ import type {
 } from "@asset-hub/shared";
 import { mockAssets } from "./data/assets.js";
 import { mockActivityEvents } from "./data/activity.js";
+import { mockProperties } from "./data/locations.js";
+import { mockWorkOrders } from "./data/work-orders.js";
 
 export const mockDashboardProvider: DashboardProvider = {
   async getStats(customerID: number): Promise<DashboardStats> {
@@ -44,6 +46,80 @@ export const mockDashboardProvider: DashboardProvider = {
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
+    // Category breakdown (same data, different key name for the chart component)
+    const categoryBreakdown = assetsByCategory.map((c) => ({
+      name: c.category,
+      count: c.count,
+      slug: c.slug,
+    }));
+
+    // Condition distribution for donut chart
+    const conditionBuckets = { Excellent: 0, Good: 0, Fair: 0, Poor: 0, Critical: 0 };
+    const conditionFills: Record<string, string> = {
+      Excellent: "var(--chart-1)",
+      Good: "var(--chart-2)",
+      Fair: "var(--chart-3)",
+      Poor: "var(--chart-4)",
+      Critical: "var(--chart-5)",
+    };
+    for (const a of active) {
+      const r = a.conditionRating;
+      if (r === null) continue;
+      if (r === 5) conditionBuckets.Excellent++;
+      else if (r === 4) conditionBuckets.Good++;
+      else if (r === 3) conditionBuckets.Fair++;
+      else if (r === 2) conditionBuckets.Poor++;
+      else conditionBuckets.Critical++;
+    }
+    const conditionDistribution = Object.entries(conditionBuckets)
+      .filter(([, v]) => v > 0)
+      .map(([name, value]) => ({ name, value, fill: conditionFills[name] ?? "var(--chart-1)" }));
+
+    // Count poor/critical condition
+    const poorCount = active.filter(
+      (a) => a.conditionRating !== null && a.conditionRating === 2
+    ).length;
+    const criticalCount = active.filter(
+      (a) => a.conditionRating !== null && a.conditionRating <= 1
+    ).length;
+
+    // Online/offline from operationalStatus field
+    const onlineCount = active.filter(
+      (a) => a.operationalStatus === "online"
+    ).length;
+    const offlineCount = active.filter(
+      (a) => a.operationalStatus === "offline"
+    ).length;
+
+    // Total properties for this customer
+    const totalProperties = mockProperties.filter(
+      (p) => p.customerID === customerID && p.isActive
+    ).length;
+
+    // Work orders
+    const customerWOs = mockWorkOrders.filter(
+      (wo) => wo.customerID === customerID
+    );
+    const openWorkOrders = customerWOs.filter(
+      (wo) => wo.status === "InProgress" || wo.status === "Open"
+    ).length;
+    const overdueWorkOrders = Math.max(0, Math.floor(openWorkOrders * 0.3)); // ~30% overdue for demo
+
+    // YTD maintenance cost
+    const currentYear = new Date().getFullYear();
+    const ytdMaintenanceCost = customerWOs
+      .filter((wo) => {
+        if (!wo.completedDate) return false;
+        return new Date(wo.completedDate).getFullYear() >= currentYear - 1;
+      })
+      .reduce((sum, wo) => sum + wo.laborCost + wo.partsCost + wo.vendorCost, 0);
+
+    // Total asset value (sum of acquisition costs)
+    const totalAssetValue = active.reduce(
+      (sum, a) => sum + (a.acquisitionCost ?? 0),
+      0
+    );
+
     // Assets needing attention: poor condition (<=2), overdue maintenance (>180 days),
     // expired warranty, or flagged status
     const now = new Date();
@@ -76,9 +152,22 @@ export const mockDashboardProvider: DashboardProvider = {
     return {
       totalAssets: active.length,
       activeAssets: active.filter((a) => a.lifecycleStatus === "Active").length,
+      activeCount: active.filter((a) => a.lifecycleStatus === "Active").length,
+      flaggedCount: active.filter((a) => a.lifecycleStatus === "Flagged").length,
+      criticalCount,
+      poorCount,
+      onlineCount,
+      offlineCount,
+      totalProperties,
+      openWorkOrders,
+      overdueWorkOrders,
+      ytdMaintenanceCost,
+      totalAssetValue,
+      assetsNeedingAttention: needsAttention,
       assetsByStatus,
       assetsByCategory,
-      assetsNeedingAttention: needsAttention,
+      conditionDistribution,
+      categoryBreakdown,
     };
   },
 
