@@ -3,7 +3,9 @@ import { Suspense } from "react";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { ScopeProvider } from "@/components/layout/scope-provider";
+import { SidebarProvider } from "@/components/layout/sidebar-context";
 import { Sidebar } from "@/components/layout/sidebar";
+import { MainContent } from "@/components/layout/main-content";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,12 +25,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <QueryProvider>
             <Suspense>
               <ScopeProvider>
-                <div className="flex min-h-screen">
-                  <Sidebar />
-                  <main className="flex-1 ml-[260px] transition-all duration-300">
-                    {children}
-                  </main>
-                </div>
+                <SidebarProvider>
+                  <div className="flex min-h-screen">
+                    <Sidebar />
+                    <MainContent>{children}</MainContent>
+                  </div>
+                </SidebarProvider>
               </ScopeProvider>
             </Suspense>
           </QueryProvider>

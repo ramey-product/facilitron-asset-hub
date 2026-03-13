@@ -26,6 +26,14 @@ import { receiving } from "./routes/receiving.js";
 import { alerts } from "./routes/alerts.js";
 import { kitting } from "./routes/kitting.js";
 import { transfers } from "./routes/transfers.js";
+import { mapping } from "./routes/mapping.js";
+import { reportSchedules } from "./routes/report-schedules.js";
+import { lifecycle, assetLifecycle } from "./routes/lifecycle.js";
+// Phase 7: Intelligence — Meters, Downtime, TCO, Depreciation
+import { meters, meterAlerts } from "./routes/meters.js";
+import { downtime, downtimeResolve, reliability } from "./routes/downtime.js";
+import { tcoAsset, tco } from "./routes/tco.js";
+import { depreciationAsset, depreciation } from "./routes/depreciation.js";
 import type { AppEnv } from "./types/context.js";
 
 const app = new Hono<AppEnv>();
@@ -108,6 +116,39 @@ app.route("/api/v2/inventory", kitting);
 
 // Phase 6: Inventory Transfers (P1-25)
 app.route("/api/v2/inventory", transfers);
+
+// Phase 7: Interactive Asset Mapping (P1-33)
+// pins/:pinId routes MUST be registered before /:mapId to avoid parameter collision
+app.route("/api/v2/maps", mapping);
+
+// Phase 7: Scheduled Auto-Reports (P1-34)
+app.route("/api/v2/reports", reportSchedules);
+
+// Phase 7: Asset Lifecycle Tracking (P1-35)
+// analytics/lifecycle/forecast and /compliance MUST be before generic /:assetId/lifecycle
+app.route("/api/v2/analytics/lifecycle", lifecycle);
+app.route("/api/v2/assets", assetLifecycle);
+
+// Phase 7: Meter-Based Maintenance (P1-29)
+// /meters/alerts MUST be before /:assetId/meters to avoid parameter collision
+app.route("/api/v2/meters", meterAlerts);
+app.route("/api/v2/assets", meters);
+
+// Phase 7: Downtime Tracking (P1-30)
+// /analytics/reliability and /downtime/:eventId/resolve before /:assetId/downtime
+app.route("/api/v2/analytics", reliability);
+app.route("/api/v2/downtime", downtimeResolve);
+app.route("/api/v2/assets", downtime);
+
+// Phase 7: TCO / Asset Cost Rollup (P1-31)
+// /analytics/tco/repair-vs-replace MUST be before /analytics/tco (query route)
+app.route("/api/v2/analytics", tco);
+app.route("/api/v2/assets", tcoAsset);
+
+// Phase 7: Depreciation (P1-32)
+// /analytics/depreciation/register MUST be before /analytics/depreciation (summary)
+app.route("/api/v2/analytics", depreciation);
+app.route("/api/v2/assets", depreciationAsset);
 
 // 404 fallback
 app.notFound((c) => {

@@ -83,6 +83,16 @@
 
 > These define where code should be **written**, not where documents live.
 
+## Layout Components (Reusable)
+
+| Resource | Path | Description |
+|----------|------|-------------|
+| SidebarContext | `apps/web/src/components/layout/sidebar-context.tsx` | Shared collapsed state for primary sidebar (P1-42 S1) |
+| MainContent | `apps/web/src/components/layout/main-content.tsx` | Dynamic margin wrapper responding to sidebar state (P1-42 S1) |
+| CollapsibleFilterSidebar | `apps/web/src/components/layout/collapsible-filter-sidebar.tsx` | Reusable animated filter panel for any page (P1-42 S2) |
+
+## Codebase Conventions (Structural — Not File Lookups)
+
 | Convention | Path Pattern | Governed By |
 |------------|-------------|-------------|
 | Next.js Pages | `apps/web/app/` | `.claude/rules/components.md` |

@@ -1,0 +1,121 @@
+/**
+ * Seed data for P1-33 Interactive Asset Mapping.
+ * 4 floor plans (2 properties × 2 floors) with 40+ asset pins.
+ */
+
+import type { FloorPlan, AssetPin } from "@asset-hub/shared";
+
+export const mockFloorPlans: FloorPlan[] = [
+  {
+    id: 1,
+    propertyId: 1,
+    propertyName: "Sunset Ridge High School",
+    floorNumber: 1,
+    floorName: "Ground Floor",
+    imageUrl: "/placeholder-floorplan.png",
+    width: 1200,
+    height: 800,
+    scale: "1 grid = 20 ft",
+    uploadedAt: "2025-09-10T08:00:00Z",
+    uploadedBy: "admin.user",
+    pinCount: 18,
+  },
+  {
+    id: 2,
+    propertyId: 1,
+    propertyName: "Sunset Ridge High School",
+    floorNumber: 2,
+    floorName: "Second Floor",
+    imageUrl: "/placeholder-floorplan.png",
+    width: 1200,
+    height: 800,
+    scale: "1 grid = 20 ft",
+    uploadedAt: "2025-09-10T08:30:00Z",
+    uploadedBy: "admin.user",
+    pinCount: 12,
+  },
+  {
+    id: 3,
+    propertyId: 2,
+    propertyName: "Central Administration Building",
+    floorNumber: 1,
+    floorName: "Lobby & Main Floor",
+    imageUrl: "/placeholder-floorplan.png",
+    width: 1000,
+    height: 700,
+    scale: "1 grid = 15 ft",
+    uploadedAt: "2025-10-05T09:00:00Z",
+    uploadedBy: "demo.user",
+    pinCount: 10,
+  },
+  {
+    id: 4,
+    propertyId: 2,
+    propertyName: "Central Administration Building",
+    floorNumber: 2,
+    floorName: "Executive Suite",
+    imageUrl: "/placeholder-floorplan.png",
+    width: 1000,
+    height: 700,
+    scale: "1 grid = 15 ft",
+    uploadedAt: "2025-10-05T09:30:00Z",
+    uploadedBy: "demo.user",
+    pinCount: 6,
+  },
+];
+
+export const mockAssetPins: AssetPin[] = [
+  // --- Floor Plan 1: Sunset Ridge Ground Floor ---
+  { id: 1, assetId: 1, assetName: "RTU-01 Rooftop AC Unit", categoryName: "HVAC", condition: "Good", status: "online", mapId: 1, x: 15, y: 10, iconType: "hvac" },
+  { id: 2, assetId: 2, assetName: "AHU-01 Air Handler", categoryName: "HVAC", condition: "Fair", status: "online", mapId: 1, x: 45, y: 12, iconType: "hvac" },
+  { id: 3, assetId: 3, assetName: "Boiler B-01", categoryName: "HVAC", condition: "Poor", status: "offline", mapId: 1, x: 72, y: 15, iconType: "hvac" },
+  { id: 4, assetId: 4, assetName: "Chiller CH-01", categoryName: "HVAC", condition: "Good", status: "online", mapId: 1, x: 20, y: 35, iconType: "hvac" },
+  { id: 5, assetId: 5, assetName: "Main Electrical Panel EP-01", categoryName: "Electrical", condition: "Good", status: "online", mapId: 1, x: 85, y: 30, iconType: "electrical" },
+  { id: 6, assetId: 6, assetName: "Emergency Generator EG-01", categoryName: "Electrical", condition: "Good", status: "online", mapId: 1, x: 90, y: 60, iconType: "electrical" },
+  { id: 7, assetId: 7, assetName: "Sub-Panel SP-03 Gym", categoryName: "Electrical", condition: "Fair", status: "online", mapId: 1, x: 55, y: 70, iconType: "electrical" },
+  { id: 8, assetId: 8, assetName: "Fire Alarm Panel FA-01", categoryName: "Fire Safety", condition: "Good", status: "online", mapId: 1, x: 30, y: 55, iconType: "fire" },
+  { id: 9, assetId: 9, assetName: "Sprinkler Zone Valve SZV-01", categoryName: "Fire Safety", condition: "Good", status: "online", mapId: 1, x: 40, y: 45, iconType: "fire" },
+  { id: 10, assetId: 10, assetName: "Backflow Preventer BP-01", categoryName: "Plumbing", condition: "Good", status: "online", mapId: 1, x: 10, y: 60, iconType: "plumbing" },
+  { id: 11, assetId: 11, assetName: "Hot Water Heater HWH-01", categoryName: "Plumbing", condition: "Fair", status: "online", mapId: 1, x: 12, y: 75, iconType: "plumbing" },
+  { id: 12, assetId: 12, assetName: "Cafeteria Exhaust Fan EF-01", categoryName: "HVAC", condition: "Poor", status: "offline", mapId: 1, x: 60, y: 85, iconType: "hvac" },
+  { id: 13, assetId: 13, assetName: "Gym HVAC Unit GYM-01", categoryName: "HVAC", condition: "Good", status: "online", mapId: 1, x: 50, y: 80, iconType: "hvac" },
+  { id: 14, assetId: 14, assetName: "Elevator ELV-01", categoryName: "Structural", condition: "Good", status: "online", mapId: 1, x: 35, y: 30, iconType: "generic" },
+  { id: 15, assetId: 15, assetName: "UPS System UPS-01", categoryName: "Electrical", condition: "Good", status: "online", mapId: 1, x: 80, y: 80, iconType: "electrical" },
+  { id: 16, assetId: 16, assetName: "Security Camera SC-01", categoryName: "Security", condition: "Good", status: "online", mapId: 1, x: 65, y: 25, iconType: "generic" },
+  { id: 17, assetId: 17, assetName: "Security Camera SC-02", categoryName: "Security", condition: "Good", status: "online", mapId: 1, x: 25, y: 20, iconType: "generic" },
+  { id: 18, assetId: 18, assetName: "Water Softener WS-01", categoryName: "Plumbing", condition: "Fair", status: "online", mapId: 1, x: 8, y: 88, iconType: "plumbing" },
+
+  // --- Floor Plan 2: Sunset Ridge Second Floor ---
+  { id: 19, assetId: 19, assetName: "RTU-02 Rooftop AC Unit", categoryName: "HVAC", condition: "Good", status: "online", mapId: 2, x: 20, y: 10, iconType: "hvac" },
+  { id: 20, assetId: 20, assetName: "RTU-03 Rooftop AC Unit", categoryName: "HVAC", condition: "Good", status: "online", mapId: 2, x: 60, y: 10, iconType: "hvac" },
+  { id: 21, assetId: 21, assetName: "VAV Box V-201", categoryName: "HVAC", condition: "Good", status: "online", mapId: 2, x: 30, y: 30, iconType: "hvac" },
+  { id: 22, assetId: 22, assetName: "VAV Box V-202", categoryName: "HVAC", condition: "Fair", status: "online", mapId: 2, x: 55, y: 30, iconType: "hvac" },
+  { id: 23, assetId: 23, assetName: "Sub-Panel SP-04 2nd Fl", categoryName: "Electrical", condition: "Good", status: "online", mapId: 2, x: 80, y: 25, iconType: "electrical" },
+  { id: 24, assetId: 24, assetName: "Fire Alarm Panel FA-02", categoryName: "Fire Safety", condition: "Good", status: "online", mapId: 2, x: 45, y: 50, iconType: "fire" },
+  { id: 25, assetId: 25, assetName: "Security Camera SC-03", categoryName: "Security", condition: "Good", status: "online", mapId: 2, x: 15, y: 50, iconType: "generic" },
+  { id: 26, assetId: 26, assetName: "Security Camera SC-04", categoryName: "Security", condition: "Poor", status: "offline", mapId: 2, x: 75, y: 60, iconType: "generic" },
+  { id: 27, assetId: 27, assetName: "Janitor Room Utility Sink", categoryName: "Plumbing", condition: "Good", status: "online", mapId: 2, x: 10, y: 75, iconType: "plumbing" },
+  { id: 28, assetId: 28, assetName: "Computer Lab UPS-02", categoryName: "Electrical", condition: "Good", status: "online", mapId: 2, x: 40, y: 80, iconType: "electrical" },
+  { id: 29, assetId: 29, assetName: "Server Room AC SR-01", categoryName: "HVAC", condition: "Fair", status: "online", mapId: 2, x: 65, y: 75, iconType: "hvac" },
+  { id: 30, assetId: 30, assetName: "Elevator ELV-02 (2nd Floor)", categoryName: "Structural", condition: "Good", status: "online", mapId: 2, x: 88, y: 50, iconType: "generic" },
+
+  // --- Floor Plan 3: Central Admin Lobby ---
+  { id: 31, assetId: 31, assetName: "Lobby AHU AH-301", categoryName: "HVAC", condition: "Good", status: "online", mapId: 3, x: 25, y: 15, iconType: "hvac" },
+  { id: 32, assetId: 32, assetName: "Main Electrical Panel EP-301", categoryName: "Electrical", condition: "Good", status: "online", mapId: 3, x: 85, y: 20, iconType: "electrical" },
+  { id: 33, assetId: 33, assetName: "Fire Control Panel FCP-301", categoryName: "Fire Safety", condition: "Good", status: "online", mapId: 3, x: 50, y: 40, iconType: "fire" },
+  { id: 34, assetId: 34, assetName: "Boiler B-301", categoryName: "HVAC", condition: "Fair", status: "online", mapId: 3, x: 15, y: 65, iconType: "hvac" },
+  { id: 35, assetId: 35, assetName: "Elevator ELV-301", categoryName: "Structural", condition: "Good", status: "online", mapId: 3, x: 70, y: 55, iconType: "generic" },
+  { id: 36, assetId: 36, assetName: "Backflow Preventer BP-301", categoryName: "Plumbing", condition: "Good", status: "online", mapId: 3, x: 10, y: 80, iconType: "plumbing" },
+  { id: 37, assetId: 37, assetName: "Generator EG-301", categoryName: "Electrical", condition: "Good", status: "online", mapId: 3, x: 88, y: 75, iconType: "electrical" },
+  { id: 38, assetId: 38, assetName: "Security DVR DVR-301", categoryName: "Security", condition: "Fair", status: "online", mapId: 3, x: 60, y: 80, iconType: "generic" },
+  { id: 39, assetId: 39, assetName: "CRAC Unit CR-301", categoryName: "HVAC", condition: "Good", status: "online", mapId: 3, x: 40, y: 70, iconType: "hvac" },
+  { id: 40, assetId: 40, assetName: "ADA Lift AL-301", categoryName: "Structural", condition: "Poor", status: "offline", mapId: 3, x: 30, y: 50, iconType: "generic" },
+
+  // --- Floor Plan 4: Executive Suite ---
+  { id: 41, assetId: 41, assetName: "Executive AHU AH-401", categoryName: "HVAC", condition: "Good", status: "online", mapId: 4, x: 30, y: 20, iconType: "hvac" },
+  { id: 42, assetId: 42, assetName: "Sub-Panel SP-401", categoryName: "Electrical", condition: "Good", status: "online", mapId: 4, x: 80, y: 20, iconType: "electrical" },
+  { id: 43, assetId: 43, assetName: "Conference Room AV AVS-401", categoryName: "Electrical", condition: "Fair", status: "online", mapId: 4, x: 50, y: 50, iconType: "electrical" },
+  { id: 44, assetId: 44, assetName: "Fire Suppression Panel FSP-401", categoryName: "Fire Safety", condition: "Good", status: "online", mapId: 4, x: 65, y: 70, iconType: "fire" },
+  { id: 45, assetId: 45, assetName: "Security Camera SC-401", categoryName: "Security", condition: "Good", status: "online", mapId: 4, x: 20, y: 60, iconType: "generic" },
+  { id: 46, assetId: 46, assetName: "Plumbing Manifold PM-401", categoryName: "Plumbing", condition: "Good", status: "online", mapId: 4, x: 15, y: 40, iconType: "plumbing" },
+];

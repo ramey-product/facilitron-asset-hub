@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useParts, usePartCategories } from "@/hooks/use-inventory";
+import { CollapsibleFilterSidebar } from "@/components/layout/collapsible-filter-sidebar";
 
 function stockStatusBadge(part: { reorderPoint: number; minQty: number }, totalOnHand?: number) {
   // When we don't have rollup data, use the part's own fields as a rough signal
@@ -115,7 +116,7 @@ export default function InventoryPage() {
 
       <div className="flex">
         {/* Category Sidebar */}
-        <aside className="hidden lg:block w-56 shrink-0 border-r border-[var(--border)] p-4">
+        <CollapsibleFilterSidebar storageKey="parts-catalog-categories">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-3">
             Categories
           </h2>
@@ -155,7 +156,7 @@ export default function InventoryPage() {
               </button>
             ))}
           </nav>
-        </aside>
+        </CollapsibleFilterSidebar>
 
         {/* Main Content */}
         <div className="flex-1 p-8 space-y-4">
