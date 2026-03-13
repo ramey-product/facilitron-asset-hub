@@ -5,9 +5,22 @@
 export interface DashboardStats {
   totalAssets: number;
   activeAssets: number;
+  activeCount: number;
+  flaggedCount: number;
+  criticalCount: number;
+  poorCount: number;
+  onlineCount: number;
+  offlineCount: number;
+  totalProperties: number;
+  openWorkOrders: number;
+  overdueWorkOrders: number;
+  ytdMaintenanceCost: number;
+  totalAssetValue: number;
+  assetsNeedingAttention: number;
   assetsByStatus: { status: string; count: number }[];
   assetsByCategory: { category: string; slug: string; count: number }[];
-  assetsNeedingAttention: number;
+  conditionDistribution: { name: string; value: number; fill: string }[];
+  categoryBreakdown: { name: string; count: number; slug: string }[];
 }
 
 export type DashboardAlertType =

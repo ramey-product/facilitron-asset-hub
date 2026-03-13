@@ -2,47 +2,14 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
+import type {
+  DashboardStats,
+  DashboardAlert,
+  ActivityEvent,
+} from "@asset-hub/shared";
+import type { PaginationMeta } from "@asset-hub/shared";
 
-// ---- Types ----
-
-export interface DashboardStats {
-  totalAssets: number;
-  activeCount: number;
-  flaggedCount: number;
-  criticalCount: number;
-  poorCount: number;
-  onlineCount: number;
-  offlineCount: number;
-  totalProperties: number;
-  openWorkOrders: number;
-  overdueWorkOrders: number;
-  ytdMaintenanceCost: number;
-  totalAssetValue: number;
-  conditionDistribution: { name: string; value: number; fill: string }[];
-  categoryBreakdown: { name: string; count: number; slug: string }[];
-}
-
-export interface DashboardAlert {
-  alertId: string;
-  assetId: number;
-  assetName: string;
-  assetTag: string | null;
-  alertType: "overdue_maintenance" | "poor_condition" | "expired_warranty" | "expiring_warranty";
-  severity: "critical" | "high" | "medium" | "low";
-  detail: string;
-  propertyName: string | null;
-  categoryName: string | null;
-}
-
-export interface DashboardActivityEvent {
-  eventId: string;
-  assetId: number;
-  assetName: string;
-  eventType: string;
-  description: string;
-  userName: string;
-  occurredAt: string;
-}
+// ---- Response envelopes ----
 
 interface DashboardStatsResponse {
   data: DashboardStats;
@@ -50,13 +17,16 @@ interface DashboardStatsResponse {
 
 interface DashboardAlertsResponse {
   data: DashboardAlert[];
-  meta: { total: number; page: number; limit: number; totalPages: number };
+  meta: PaginationMeta;
 }
 
 interface DashboardActivityResponse {
-  data: DashboardActivityEvent[];
-  meta: { total: number; page: number; limit: number; totalPages: number };
+  data: ActivityEvent[];
+  meta: PaginationMeta;
 }
+
+// Re-export types for component convenience
+export type { DashboardStats, DashboardAlert, ActivityEvent };
 
 // ---- Hooks ----
 

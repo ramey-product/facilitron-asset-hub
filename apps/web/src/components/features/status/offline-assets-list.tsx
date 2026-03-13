@@ -37,7 +37,7 @@ export function OfflineAssetsList() {
           <div className="space-y-1">
             {offlineAlerts.slice(0, 10).map((alert) => (
               <div
-                key={alert.alertId}
+                key={alert.id}
                 className="flex items-center justify-between rounded-lg px-2 py-2 hover:bg-[var(--muted)]/50 transition-colors"
               >
                 <div className="min-w-0 flex-1">

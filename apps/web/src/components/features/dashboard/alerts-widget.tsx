@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useDashboardAlerts } from "@/hooks/use-dashboard";
-import type { DashboardAlert } from "@/hooks/use-dashboard";
+import type { DashboardAlertType } from "@asset-hub/shared";
 
 const ALERT_TYPES = [
   { value: "all", label: "All Alerts" },
@@ -26,7 +26,7 @@ const ALERT_TYPES = [
 ] as const;
 
 const alertTypeConfig: Record<
-  DashboardAlert["alertType"],
+  DashboardAlertType,
   { icon: typeof AlertTriangle; label: string; color: string }
 > = {
   overdue_maintenance: {
@@ -52,24 +52,20 @@ const alertTypeConfig: Record<
 };
 
 const severityConfig: Record<
-  DashboardAlert["severity"],
+  "critical" | "warning" | "info",
   { color: string; label: string }
 > = {
   critical: {
     color: "bg-red-100 text-red-900 border-red-300 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20",
     label: "Critical",
   },
-  high: {
+  warning: {
     color: "bg-orange-100 text-orange-900 border-orange-300 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20",
-    label: "High",
+    label: "Warning",
   },
-  medium: {
-    color: "bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
-    label: "Medium",
-  },
-  low: {
-    color: "bg-zinc-100 text-zinc-800 border-zinc-300 dark:bg-zinc-500/10 dark:text-zinc-400 dark:border-zinc-500/20",
-    label: "Low",
+  info: {
+    color: "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20",
+    label: "Info",
   },
 };
 
@@ -79,7 +75,7 @@ interface AlertsWidgetProps {
 
 export function AlertsWidget({ refetchInterval }: AlertsWidgetProps) {
   const [filterType, setFilterType] = useState<string>("all");
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
   const { data, isLoading } = useDashboardAlerts(
     filterType !== "all" ? filterType : undefined,
@@ -88,7 +84,7 @@ export function AlertsWidget({ refetchInterval }: AlertsWidgetProps) {
 
   const alerts = data?.data ?? [];
 
-  const toggleSelected = (id: string) => {
+  const toggleSelected = (id: number) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -150,14 +146,14 @@ export function AlertsWidget({ refetchInterval }: AlertsWidgetProps) {
         {!isLoading && alerts.length > 0 && (
           <div className="space-y-1.5">
             {alerts.slice(0, 8).map((alert) => {
-              const typeConf = alertTypeConfig[alert.alertType];
-              const sevConf = severityConfig[alert.severity];
+              const typeConf = alertTypeConfig[alert.type] ?? alertTypeConfig.overdue_maintenance;
+              const sevConf = severityConfig[alert.severity] ?? severityConfig.info;
               const TypeIcon = typeConf.icon;
-              const isChecked = selectedIds.has(alert.alertId);
+              const isChecked = selectedIds.has(alert.id);
 
               return (
                 <div
-                  key={alert.alertId}
+                  key={alert.id}
                   className={cn(
                     "flex items-start gap-3 rounded-lg px-3 py-2.5 transition-colors",
                     isChecked
@@ -169,7 +165,7 @@ export function AlertsWidget({ refetchInterval }: AlertsWidgetProps) {
                   <input
                     type="checkbox"
                     checked={isChecked}
-                    onChange={() => toggleSelected(alert.alertId)}
+                    onChange={() => toggleSelected(alert.id)}
                     className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-[var(--border)] accent-[var(--primary)]"
                     aria-label={`Select alert for ${alert.assetName}`}
                   />
@@ -181,13 +177,13 @@ export function AlertsWidget({ refetchInterval }: AlertsWidgetProps) {
                       <span className="truncate text-sm font-medium text-[var(--foreground)]">
                         {alert.assetName}
                       </span>
-                      {alert.assetTag && (
-                        <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
-                          {alert.assetTag}
+                      {alert.propertyName && (
+                        <span className="text-[10px] text-[var(--muted-foreground)]">
+                          {alert.propertyName}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[var(--muted-foreground)]">{alert.detail}</p>
+                    <p className="text-xs text-[var(--muted-foreground)]">{alert.message}</p>
                     <div className="mt-1 flex items-center gap-1.5">
                       <Badge className={cn("text-[10px] border", typeConf.color)}>
                         {typeConf.label}
