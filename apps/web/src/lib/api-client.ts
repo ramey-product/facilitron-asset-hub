@@ -173,4 +173,52 @@ export const apiClient = {
     inspections: (assetId: number, params?: Record<string, string | number>) =>
       fetchApi(`/api/v2/assets/${assetId}/fit-inspections`, { params }),
   },
+  inventory: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/inventory", { params }),
+    categories: () =>
+      fetchApi("/api/v2/inventory/categories"),
+    getById: (id: number) =>
+      fetchApi(`/api/v2/inventory/${id}`),
+    create: (data: unknown) =>
+      fetchApi("/api/v2/inventory", { method: "POST", body: data }),
+    update: (id: number, data: unknown) =>
+      fetchApi(`/api/v2/inventory/${id}`, { method: "PUT", body: data }),
+    delete: (id: number) =>
+      fetchApi(`/api/v2/inventory/${id}`, { method: "DELETE" }),
+    bulkActivate: (ids: number[]) =>
+      fetchApi("/api/v2/inventory/bulk-activate", { method: "POST", body: { ids } }),
+    bulkDeactivate: (ids: number[]) =>
+      fetchApi("/api/v2/inventory/bulk-deactivate", { method: "POST", body: { ids } }),
+  },
+  stock: {
+    getByPart: (partId: number) =>
+      fetchApi(`/api/v2/stock/${partId}`),
+    rollup: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/stock/rollup", { params }),
+    alerts: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/stock/alerts", { params }),
+    adjust: (partId: number, locationId: number, data: unknown) =>
+      fetchApi(`/api/v2/stock/${partId}/${locationId}`, { method: "PUT", body: data }),
+  },
+  vendors: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/procurement/vendors", { params }),
+    getById: (id: number) =>
+      fetchApi(`/api/v2/procurement/vendors/${id}`),
+    performance: (id: number) =>
+      fetchApi(`/api/v2/procurement/vendors/${id}/performance`),
+    compare: (ids: number[]) =>
+      fetchApi(`/api/v2/procurement/vendors/compare`, { params: { ids: ids.join(",") } }),
+  },
+  consumption: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/consumption", { params }),
+    forecast: (partId: number) =>
+      fetchApi("/api/v2/consumption/forecast", { params: { partId } }),
+  },
+  audit: {
+    inventory: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/audit/inventory", { params }),
+  },
 };

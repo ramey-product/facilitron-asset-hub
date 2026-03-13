@@ -9,3 +9,6 @@ export * from "./import";
 export * from "./documents";
 export * from "./custom-fields";
 export * from "./fit";
+export * from "./inventory";
+export * from "./vendor";
+export * from "./consumption";

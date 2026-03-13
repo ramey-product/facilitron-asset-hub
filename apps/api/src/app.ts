@@ -17,6 +17,10 @@ import { importRoutes } from "./routes/import.js";
 import { documents } from "./routes/documents.js";
 import { customFields, assetCustomFields } from "./routes/custom-fields.js";
 import { fit } from "./routes/fit.js";
+import { inventory } from "./routes/inventory.js";
+import { stock } from "./routes/stock.js";
+import { vendors } from "./routes/vendors.js";
+import { consumption, audit } from "./routes/consumption.js";
 import type { AppEnv } from "./types/context.js";
 
 const app = new Hono<AppEnv>();
@@ -71,6 +75,17 @@ app.route("/api/v2/assets", assetCustomFields);
 
 // Phase 4: FIT Modal Integration (P0-16)
 app.route("/api/v2/assets", fit);
+
+// Phase 5: Inventory Foundation (P1-17, P1-18)
+app.route("/api/v2/inventory", inventory);
+app.route("/api/v2/stock", stock);
+
+// Phase 5: Vendor Directory (P1-22)
+app.route("/api/v2/procurement/vendors", vendors);
+
+// Phase 5: WO Consumption (P1-19)
+app.route("/api/v2/consumption", consumption);
+app.route("/api/v2/audit/inventory", audit);
 
 // 404 fallback
 app.notFound((c) => {
