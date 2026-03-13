@@ -578,12 +578,12 @@ export const mockImportProvider: ImportProvider = {
             statusReasonCode: null,
             statusChangedAt: null,
             statusChangedBy: null,
-            propertyName: property?.propertyName,
-            locationName: location?.locationName,
-            categorySlug: category?.slug,
-            categoryName: category?.name,
-            manufacturerName: manufacturer?.manufacturerName,
-            equipmentTypeName: equipmentType?.equipmentTypeName,
+            propertyName: property?.propertyName ?? null,
+            locationName: location?.locationName ?? null,
+            categorySlug: category?.slug ?? null,
+            categoryName: category?.name ?? null,
+            manufacturerName: manufacturer?.manufacturerName ?? null,
+            equipmentTypeName: equipmentType?.equipmentTypeName ?? null,
           };
 
           mockAssets.push(newAsset);

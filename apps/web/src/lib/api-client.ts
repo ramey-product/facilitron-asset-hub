@@ -112,7 +112,7 @@ export const apiClient = {
   status: {
     get: (assetId: number) =>
       fetchApi(`/api/v2/assets/${assetId}/status`),
-    update: (assetId: number, data: { isOnline: boolean; reasonCode?: string; notes?: string }) =>
+    update: (assetId: number, data: { status: "online" | "offline"; reasonCode?: string; notes?: string }) =>
       fetchApi(`/api/v2/assets/${assetId}/status`, { method: "PUT", body: data }),
     reasons: () =>
       fetchApi("/api/v2/status-reasons"),

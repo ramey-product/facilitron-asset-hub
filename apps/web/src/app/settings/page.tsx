@@ -19,6 +19,10 @@ import { cn } from '@/lib/utils';
 
 type TabId = 'categories' | 'conditions' | 'lifecycle' | 'general' | 'manufacturers';
 
+interface SettingsResponse {
+  data: Array<{ settingKey: string; settingValue: string }>;
+}
+
 const TABS: { id: TabId; label: string; icon: React.ElementType; description: string }[] = [
   {
     id: 'categories',
@@ -55,9 +59,9 @@ const TABS: { id: TabId; label: string; icon: React.ElementType; description: st
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<TabId>('categories');
 
-  const { data: settingsData, isLoading: settingsLoading } = useQuery({
+  const { data: settingsData, isLoading: settingsLoading } = useQuery<SettingsResponse>({
     queryKey: ['settings', 'all'],
-    queryFn: () => apiClient.settings.getAll(),
+    queryFn: () => apiClient.settings.getAll() as Promise<SettingsResponse>,
     staleTime: 60_000,
   });
 
@@ -77,13 +81,16 @@ export default function SettingsPage() {
         </div>
 
         {/* Tab navigation */}
-        <div className="flex items-center gap-1 px-8 pb-0 overflow-x-auto">
+        <div role="tablist" className="flex items-center gap-1 px-8 pb-0 overflow-x-auto">
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
               <button
                 key={tab.id}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls={`panel-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
                   'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
@@ -107,27 +114,29 @@ export default function SettingsPage() {
           <p className="text-sm text-[var(--muted-foreground)] mt-0.5">{activeTabDef.description}</p>
         </div>
 
-        {activeTab === 'categories' && <CategoryManager />}
+        <div role="tabpanel" id={`panel-${activeTab}`} tabIndex={0}>
+          {activeTab === 'categories' && <CategoryManager />}
 
-        {activeTab === 'conditions' && (
-          settingsLoading
-            ? <SettingsSkeleton />
-            : <ConditionScaleEditor settingsData={settingsData as { data: Array<{ settingKey: string; settingValue: string }> } | undefined} />
-        )}
+          {activeTab === 'conditions' && (
+            settingsLoading
+              ? <SettingsSkeleton />
+              : <ConditionScaleEditor settingsData={settingsData} />
+          )}
 
-        {activeTab === 'lifecycle' && (
-          settingsLoading
-            ? <SettingsSkeleton />
-            : <LifecycleEditor settingsData={settingsData as { data: Array<{ settingKey: string; settingValue: string }> } | undefined} />
-        )}
+          {activeTab === 'lifecycle' && (
+            settingsLoading
+              ? <SettingsSkeleton />
+              : <LifecycleEditor settingsData={settingsData} />
+          )}
 
-        {activeTab === 'general' && (
-          settingsLoading
-            ? <SettingsSkeleton />
-            : <GeneralSettings settingsData={settingsData as { data: Array<{ settingKey: string; settingValue: string }> } | undefined} />
-        )}
+          {activeTab === 'general' && (
+            settingsLoading
+              ? <SettingsSkeleton />
+              : <GeneralSettings settingsData={settingsData} />
+          )}
 
-        {activeTab === 'manufacturers' && <ManufacturerTable />}
+          {activeTab === 'manufacturers' && <ManufacturerTable />}
+        </div>
       </div>
     </div>
   );

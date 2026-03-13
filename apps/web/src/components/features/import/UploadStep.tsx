@@ -17,7 +17,15 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-async function parseCSV(file: File): Promise<{ headers: string[]; rows: Record<string, unknown>[] }> {
+function coerceRowToStrings(row: Record<string, unknown>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(row)) {
+    out[key] = String(value ?? "");
+  }
+  return out;
+}
+
+async function parseCSV(file: File): Promise<{ headers: string[]; rows: Record<string, string>[] }> {
   const Papa = await import("papaparse");
   return new Promise((resolve, reject) => {
     Papa.default.parse<Record<string, unknown>>(file, {
@@ -26,7 +34,7 @@ async function parseCSV(file: File): Promise<{ headers: string[]; rows: Record<s
       transformHeader: (h: string) => h.trim(),
       complete: (results: Papa.ParseResult<Record<string, unknown>>) => {
         const headers = results.meta.fields ?? [];
-        const rows = results.data;
+        const rows = results.data.map(coerceRowToStrings);
         resolve({ headers, rows });
       },
       error: (err: Error) => reject(err),
@@ -34,7 +42,7 @@ async function parseCSV(file: File): Promise<{ headers: string[]; rows: Record<s
   });
 }
 
-async function parseXLSX(file: File): Promise<{ headers: string[]; rows: Record<string, unknown>[] }> {
+async function parseXLSX(file: File): Promise<{ headers: string[]; rows: Record<string, string>[] }> {
   const XLSX = await import("xlsx");
   const buffer = await file.arrayBuffer();
   const workbook = XLSX.read(buffer, { type: "array" });
@@ -44,7 +52,7 @@ async function parseXLSX(file: File): Promise<{ headers: string[]; rows: Record<
   if (!sheet) throw new Error("Failed to read sheet");
   const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" }) as Record<string, unknown>[];
   const headers = jsonData.length > 0 && jsonData[0] ? Object.keys(jsonData[0]) : [];
-  return { headers, rows: jsonData };
+  return { headers, rows: jsonData.map(coerceRowToStrings) };
 }
 
 export function UploadStep({ onFileUploaded }: UploadStepProps) {

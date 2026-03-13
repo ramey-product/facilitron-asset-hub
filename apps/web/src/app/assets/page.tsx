@@ -171,7 +171,7 @@ export default function AssetsPage() {
             </Button>
           )}
 
-          <div className="ml-auto flex items-center border border-[var(--border)] rounded-lg overflow-hidden">
+          <div className="ml-auto flex items-center border border-[var(--border)] rounded-lg overflow-hidden" role="group" aria-label="View mode">
             <button
               onClick={() => setViewMode("table")}
               className={cn(
@@ -247,6 +247,8 @@ export default function AssetsPage() {
                     ].map((col) => (
                       <th
                         key={col.key}
+                        scope="col"
+                        aria-sort={sortBy === col.key ? (sortOrder === "asc" ? "ascending" : "descending") : "none"}
                         className="cursor-pointer px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
                         onClick={() => toggleSort(col.key)}
                       >
@@ -256,7 +258,7 @@ export default function AssetsPage() {
                         </div>
                       </th>
                     ))}
-                    <th className="px-4 py-3 w-10">
+                    <th scope="col" className="px-4 py-3 w-10">
                       <span className="sr-only">Actions</span>
                     </th>
                   </tr>
