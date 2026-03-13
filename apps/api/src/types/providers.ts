@@ -38,6 +38,26 @@ import type {
   UpdateCustomFieldValuesInput,
   FitSummary,
   FitInspectionRecord,
+  PartRecord,
+  PartCategory,
+  ListPartsQuery,
+  CreatePartInput,
+  UpdatePartInput,
+  StockLevel,
+  StockAdjustInput,
+  StockRollup,
+  StockAlert,
+  StockAdjustmentLog,
+  VendorRecord,
+  VendorPerformance,
+  ListVendorsQuery,
+  CreateVendorInput,
+  UpdateVendorInput,
+  ConsumptionRecord,
+  ConsumptionForecast,
+  InventoryAuditRecord,
+  ListConsumptionQuery,
+  ListAuditQuery,
 } from "@asset-hub/shared";
 
 // Re-export asset types so existing imports from providers.ts still work
@@ -294,4 +314,47 @@ export interface CustomFieldProvider {
 export interface FitProvider {
   getSummary(customerID: number, assetId: number): Promise<FitSummary | null>;
   getInspections(customerID: number, assetId: number, page: number, limit: number): Promise<PaginatedResult<FitInspectionRecord>>;
+}
+
+// ---- Inventory types (P1-17) ----
+
+export interface InventoryProvider {
+  list(customerID: number, query: ListPartsQuery): Promise<PaginatedResult<PartRecord>>;
+  getById(customerID: number, id: number): Promise<PartRecord | null>;
+  create(customerID: number, data: CreatePartInput): Promise<PartRecord>;
+  update(customerID: number, id: number, data: UpdatePartInput): Promise<PartRecord | null>;
+  delete(customerID: number, id: number): Promise<boolean>;
+  bulkActivate(customerID: number, ids: number[]): Promise<number>;
+  bulkDeactivate(customerID: number, ids: number[]): Promise<number>;
+  listCategories(customerID: number): Promise<PartCategory[]>;
+}
+
+// ---- Stock types (P1-18) ----
+
+export interface StockProvider {
+  getStockLevels(customerID: number, partId: number): Promise<StockLevel[]>;
+  getRollup(customerID: number, query: { page: number; limit: number; status?: string; search?: string; sortBy?: string; sortOrder?: "asc" | "desc" }): Promise<PaginatedResult<StockRollup>>;
+  adjustStock(customerID: number, partId: number, locationId: number, adjustedBy: number, data: StockAdjustInput): Promise<StockLevel | null>;
+  getAlerts(customerID: number, query: { page: number; limit: number; severity?: string }): Promise<PaginatedResult<StockAlert>>;
+}
+
+// ---- Vendor types (P1-22) ----
+
+export interface VendorProvider {
+  list(customerID: number, query: ListVendorsQuery): Promise<PaginatedResult<VendorRecord>>;
+  getById(customerID: number, id: number): Promise<VendorRecord | null>;
+  create(customerID: number, data: CreateVendorInput): Promise<VendorRecord>;
+  update(customerID: number, id: number, data: UpdateVendorInput): Promise<VendorRecord | null>;
+  delete(customerID: number, id: number): Promise<boolean>;
+  getPerformance(customerID: number, vendorId: number): Promise<VendorPerformance | null>;
+  compareVendors(customerID: number, vendorIds: number[]): Promise<Array<VendorRecord & { performance: VendorPerformance | null }>>;
+}
+
+// ---- Consumption types (P1-19) ----
+
+export interface ConsumptionProvider {
+  list(customerID: number, query: ListConsumptionQuery): Promise<PaginatedResult<ConsumptionRecord>>;
+  getForecast(customerID: number, partId: number): Promise<ConsumptionForecast | null>;
+  reverse(customerID: number, id: number, reversedBy: string): Promise<ConsumptionRecord | null>;
+  listAudit(customerID: number, query: ListAuditQuery): Promise<PaginatedResult<InventoryAuditRecord>>;
 }
