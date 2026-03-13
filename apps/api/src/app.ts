@@ -21,6 +21,11 @@ import { inventory } from "./routes/inventory.js";
 import { stock } from "./routes/stock.js";
 import { vendors } from "./routes/vendors.js";
 import { consumption, audit } from "./routes/consumption.js";
+import { procurement } from "./routes/procurement.js";
+import { receiving } from "./routes/receiving.js";
+import { alerts } from "./routes/alerts.js";
+import { kitting } from "./routes/kitting.js";
+import { transfers } from "./routes/transfers.js";
 import type { AppEnv } from "./types/context.js";
 
 const app = new Hono<AppEnv>();
@@ -86,6 +91,23 @@ app.route("/api/v2/procurement/vendors", vendors);
 // Phase 5: WO Consumption (P1-19)
 app.route("/api/v2/consumption", consumption);
 app.route("/api/v2/audit/inventory", audit);
+
+// Phase 6: Purchase Orders (P1-21)
+// analytics must be registered before /:id to avoid parameter collision
+app.route("/api/v2/procurement/orders", procurement);
+
+// Phase 6: PO Receiving (P1-23)
+// discrepancies must be registered before /:id
+app.route("/api/v2/procurement/receiving", receiving);
+
+// Phase 6: Reorder Alerts (P1-20) — /alerts/* and /reorder-rules/* under inventory namespace
+app.route("/api/v2/inventory", alerts);
+
+// Phase 6: Kitting (P1-24) — /kits/* under inventory namespace
+app.route("/api/v2/inventory", kitting);
+
+// Phase 6: Inventory Transfers (P1-25)
+app.route("/api/v2/inventory", transfers);
 
 // 404 fallback
 app.notFound((c) => {

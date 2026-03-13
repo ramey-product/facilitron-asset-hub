@@ -221,4 +221,88 @@ export const apiClient = {
     inventory: (params?: Record<string, string | number>) =>
       fetchApi("/api/v2/audit/inventory", { params }),
   },
+  procurement: {
+    orders: {
+      list: (params?: Record<string, string | number>) =>
+        fetchApi("/api/v2/procurement/orders", { params }),
+      analytics: () =>
+        fetchApi("/api/v2/procurement/orders/analytics"),
+      getById: (id: number) =>
+        fetchApi(`/api/v2/procurement/orders/${id}`),
+      create: (data: unknown) =>
+        fetchApi("/api/v2/procurement/orders", { method: "POST", body: data }),
+      update: (id: number, data: unknown) =>
+        fetchApi(`/api/v2/procurement/orders/${id}`, { method: "PUT", body: data }),
+      submit: (id: number) =>
+        fetchApi(`/api/v2/procurement/orders/${id}/submit`, { method: "POST", body: {} }),
+      approve: (id: number, approvedBy: number) =>
+        fetchApi(`/api/v2/procurement/orders/${id}/approve`, { method: "POST", body: { approvedBy } }),
+      cancel: (id: number) =>
+        fetchApi(`/api/v2/procurement/orders/${id}/cancel`, { method: "POST", body: {} }),
+      markOrdered: (id: number) =>
+        fetchApi(`/api/v2/procurement/orders/${id}/mark-ordered`, { method: "POST", body: {} }),
+    },
+    receiving: {
+      list: (params?: Record<string, string | number>) =>
+        fetchApi("/api/v2/procurement/receiving", { params }),
+      getById: (id: number) =>
+        fetchApi(`/api/v2/procurement/receiving/${id}`),
+      create: (data: unknown) =>
+        fetchApi("/api/v2/procurement/receiving", { method: "POST", body: data }),
+      discrepancies: () =>
+        fetchApi("/api/v2/procurement/receiving/discrepancies"),
+    },
+  },
+  alerts: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/inventory/alerts", { params }),
+    dismiss: (id: number) =>
+      fetchApi(`/api/v2/inventory/alerts/${id}/dismiss`, { method: "POST" }),
+    convertToPO: (id: number) =>
+      fetchApi(`/api/v2/inventory/alerts/${id}/convert-to-po`, { method: "POST" }),
+    rules: {
+      list: () => fetchApi("/api/v2/inventory/reorder-rules"),
+      create: (data: unknown) =>
+        fetchApi("/api/v2/inventory/reorder-rules", { method: "POST", body: data }),
+      update: (id: number, data: unknown) =>
+        fetchApi(`/api/v2/inventory/reorder-rules/${id}`, { method: "PUT", body: data }),
+      delete: (id: number) =>
+        fetchApi(`/api/v2/inventory/reorder-rules/${id}`, { method: "DELETE" }),
+    },
+  },
+  kitting: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/inventory/kits", { params }),
+    getById: (id: number) =>
+      fetchApi(`/api/v2/inventory/kits/${id}`),
+    create: (data: unknown) =>
+      fetchApi("/api/v2/inventory/kits", { method: "POST", body: data }),
+    update: (id: number, data: unknown) =>
+      fetchApi(`/api/v2/inventory/kits/${id}`, { method: "PUT", body: data }),
+    delete: (id: number) =>
+      fetchApi(`/api/v2/inventory/kits/${id}`, { method: "DELETE" }),
+    checkout: (data: unknown) => {
+      const kitId = (data as { kitId: number }).kitId;
+      return fetchApi(`/api/v2/inventory/kits/${kitId}/checkout`, {
+        method: "POST",
+        body: data,
+      });
+    },
+  },
+  transfers: {
+    list: (params?: Record<string, string | number>) =>
+      fetchApi("/api/v2/inventory/transfers", { params }),
+    getById: (id: number) =>
+      fetchApi(`/api/v2/inventory/transfers/${id}`),
+    create: (data: unknown) =>
+      fetchApi("/api/v2/inventory/transfers", { method: "POST", body: data }),
+    approve: (id: number) =>
+      fetchApi(`/api/v2/inventory/transfers/${id}/approve`, { method: "POST" }),
+    ship: (id: number) =>
+      fetchApi(`/api/v2/inventory/transfers/${id}/ship`, { method: "POST" }),
+    receive: (id: number) =>
+      fetchApi(`/api/v2/inventory/transfers/${id}/receive`, { method: "POST" }),
+    cancel: (id: number) =>
+      fetchApi(`/api/v2/inventory/transfers/${id}/cancel`, { method: "POST" }),
+  },
 };
