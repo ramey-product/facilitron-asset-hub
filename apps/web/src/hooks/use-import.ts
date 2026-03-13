@@ -7,8 +7,8 @@ import type {
   ImportResult,
   ImportHistoryEntry,
   ImportFieldDefinition,
-} from "@asset-hub/shared/types/import.js";
-import type { ApiResponse } from "@asset-hub/shared/types/api.js";
+} from "@asset-hub/shared";
+import type { ApiResponse } from "@asset-hub/shared";
 
 export function useImportValidate() {
   const queryClient = useQueryClient();

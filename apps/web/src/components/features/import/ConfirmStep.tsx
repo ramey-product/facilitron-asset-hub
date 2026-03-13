@@ -13,7 +13,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useImportExecute } from "@/hooks/use-import";
-import type { ImportValidationResult, ImportResult } from "@asset-hub/shared/types/import.js";
+import type { ImportValidationResult, ImportResult } from "@asset-hub/shared";
 import type { ParsedFile } from "./ImportWizard";
 
 interface ConfirmStepProps {

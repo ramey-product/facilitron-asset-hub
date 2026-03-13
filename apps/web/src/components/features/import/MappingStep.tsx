@@ -10,7 +10,7 @@ import {
   IMPORTABLE_FIELDS,
   type ImportColumnMapping,
   type ImportFieldDefinition,
-} from "@asset-hub/shared/types/import.js";
+} from "@asset-hub/shared";
 
 interface MappingStepProps {
   headers: string[];

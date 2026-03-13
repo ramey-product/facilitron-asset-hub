@@ -13,7 +13,7 @@ import {
   RotateCcw,
   Clock,
 } from "lucide-react";
-import type { ImportResult } from "@asset-hub/shared/types/import.js";
+import type { ImportResult } from "@asset-hub/shared";
 
 interface ResultsStepProps {
   result: ImportResult;

@@ -14,7 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useImportValidate } from "@/hooks/use-import";
-import type { ImportValidationResult } from "@asset-hub/shared/types/import.js";
+import type { ImportValidationResult } from "@asset-hub/shared";
 import type { ParsedFile } from "./ImportWizard";
 
 interface ValidationStepProps {

@@ -9,7 +9,7 @@ import { MappingStep } from "./MappingStep";
 import { ValidationStep } from "./ValidationStep";
 import { ConfirmStep } from "./ConfirmStep";
 import { ResultsStep } from "./ResultsStep";
-import type { ImportColumnMapping, ImportValidationResult, ImportResult } from "@asset-hub/shared/types/import.js";
+import type { ImportColumnMapping, ImportValidationResult, ImportResult } from "@asset-hub/shared";
 
 const STEPS = [
   { number: 1, label: "Upload" },
