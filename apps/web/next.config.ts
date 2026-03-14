@@ -14,6 +14,17 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_API_URL: process.env["NEXT_PUBLIC_API_URL"] ?? "",
   },
 
+  // Redirect root to dashboard at the routing layer (avoids React hydration issues)
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/dashboard",
+        permanent: false,
+      },
+    ];
+  },
+
   // Minimal experimental config — expand as needed
   experimental: {},
 
