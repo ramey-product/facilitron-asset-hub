@@ -8,10 +8,10 @@ const nextConfig: NextConfig = {
   transpilePackages: ["@asset-hub/shared", "@asset-hub/api"],
 
   // Environment variables exposed to the browser
-  // In production (Vercel), API is same-origin via Next.js route handlers — use empty string.
-  // In development, proxy to the standalone Hono server on port 3001.
+  // Default: empty string (same-origin — works on Vercel via embedded API route).
+  // For local dev with standalone Hono: create .env.local with NEXT_PUBLIC_API_URL=http://localhost:3001
   env: {
-    NEXT_PUBLIC_API_URL: process.env["NEXT_PUBLIC_API_URL"] ?? (process.env["VERCEL"] ? "" : "http://localhost:3001"),
+    NEXT_PUBLIC_API_URL: process.env["NEXT_PUBLIC_API_URL"] ?? "",
   },
 
   // Minimal experimental config — expand as needed
