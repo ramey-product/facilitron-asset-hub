@@ -78,6 +78,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@asset-hub/api':
+        specifier: workspace:*
+        version: link:../api
       '@asset-hub/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -93,6 +96,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      hono:
+        specifier: ^4.6.0
+        version: 4.12.7
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.4)

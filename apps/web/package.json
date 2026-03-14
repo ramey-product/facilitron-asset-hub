@@ -13,7 +13,9 @@
     "clean": "rm -rf .next out"
   },
   "dependencies": {
+    "@asset-hub/api": "workspace:*",
     "@asset-hub/shared": "workspace:*",
+    "hono": "^4.6.0",
     "@tanstack/react-query": "^5.62.0",
     "@tanstack/react-query-devtools": "^5.62.0",
     "class-variance-authority": "^0.7.1",
